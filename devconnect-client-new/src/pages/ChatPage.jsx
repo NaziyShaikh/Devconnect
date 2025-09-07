@@ -3,7 +3,10 @@ import { useParams } from 'react-router-dom';
 import io from 'socket.io-client';
 import API from '../api/axios';
 
-const socket = io(process.env.REACT_APP_API_URL || 'http://localhost:5001');
+const socket = io(process.env.REACT_APP_API_URL || 'http://localhost:5001', {
+  withCredentials: true,
+  transports: ['websocket', 'polling']
+});
 
 const ChatPage = () => {
   const { userId } = useParams();

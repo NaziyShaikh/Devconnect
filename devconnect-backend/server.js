@@ -96,11 +96,17 @@ app.get('/', (req, res) => {
   res.send('<h1>Welcome to DevConnect Backend Server</h1><p>The API is running.</p>');
 });
 
-// Optional: Serve static files or frontend build if needed
-// app.use(express.static(path.join(__dirname, '../devconnect-client-new/build')));
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '../devconnect-client-new/build', 'index.html'));
-// });
+// Serve static files from the React app build directory
+app.use(express.static(path.join(__dirname, '../devconnect-client-new/build')));
+
+// Catch all handler: send back React's index.html file for client-side routing
+app.get('*', (req, res) => {
+  // Skip API routes
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ msg: 'API endpoint not found' });
+  }
+  res.sendFile(path.join(__dirname, '../devconnect-client-new/build', 'index.html'));
+});
 
 io.on('connection', (socket) => {
   console.log('⚡ A user connected:', socket.id);

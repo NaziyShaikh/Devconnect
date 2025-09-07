@@ -5,7 +5,12 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "build": "cd ../devconnect-client-new && npm run build",
+    "build:frontend": "cd ../devconnect-client-new && npm run build",
+    "install:frontend": "cd ../devconnect-client-new && npm install",
+    "deploy": "npm run install:frontend && npm run build:frontend && npm start",
+    "heroku-postbuild": "npm run build:frontend"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

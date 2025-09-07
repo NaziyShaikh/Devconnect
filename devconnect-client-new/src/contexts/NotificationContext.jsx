@@ -3,7 +3,10 @@ import API from '../api/axios';
 import { useAuth } from './AuthContext';
 import io from 'socket.io-client';
 
-const socket = io(process.env.REACT_APP_API_URL || 'http://localhost:5001');
+const socket = io(process.env.REACT_APP_API_URL || 'http://localhost:5001', {
+  withCredentials: true,
+  transports: ['websocket', 'polling']
+});
 console.log('🔌 Socket connecting to:', process.env.REACT_APP_API_URL || 'http://localhost:5001');
 
 socket.on('connect', () => {
