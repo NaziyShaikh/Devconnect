@@ -34,15 +34,33 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
-const clientOrigin = process.env.CLIENT_URL || [
+const clientOrigin = process.env.CLIENT_URL || 'http://localhost:3000';
+
+// Allow multiple origins for production
+const allowedOrigins = [
   'http://localhost:3000',
   'https://devconnect-1-l42o.onrender.com',
   'https://devconnect-oczl.onrender.com'
 ];
 
+// CORS configuration function for Socket.IO
+const corsOriginFunction = (origin, callback) => {
+  // Allow requests with no origin (like mobile apps or curl requests)
+  if (!origin) return callback(null, true);
+
+  // Allow localhost for development
+  if (origin.includes('localhost')) return callback(null, true);
+
+  // Allow specific deployed domains
+  if (allowedOrigins.includes(origin)) return callback(null, true);
+
+  // Reject other origins
+  return callback(new Error('Not allowed by CORS'));
+};
+
 const io = new Server(server, {
   cors: {
-    origin: clientOrigin,
+    origin: corsOriginFunction,
     methods: ['GET', 'POST'],
     credentials: true,
     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
@@ -59,8 +77,21 @@ setJoinRequestsIoInstance(io);
 // Set io instance for auth controller
 setAuthIoInstance(io);
 
+// CORS options for Express
 const corsOptions = {
-  origin: clientOrigin,
+  origin: (origin, callback) => {
+    // Allow requests with no origin
+    if (!origin) return callback(null, true);
+
+    // Allow localhost for development
+    if (origin.includes('localhost')) return callback(null, true);
+
+    // Allow specific deployed domains
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+
+    // Reject other origins
+    return callback(new Error('Not allowed by CORS'));
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
