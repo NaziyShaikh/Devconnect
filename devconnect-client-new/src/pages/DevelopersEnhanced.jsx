@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 const DevelopersEnhanced = () => {
   const [devs, setDevs] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [admins, setAdmins] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredDevs, setFilteredDevs] = useState([]);

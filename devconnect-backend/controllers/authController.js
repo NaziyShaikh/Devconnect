@@ -1,6 +1,13 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import { createNotification } from './notificationController.js';
+
+let ioInstance = null;
+
+export const setIoInstance = (io) => {
+  ioInstance = io;
+};
 
 export const register = async (req, res) => {
   try {
@@ -140,6 +147,15 @@ export const login = async (req, res) => {
       },
       token
     });
+
+    // Create a welcome notification on login
+    try {
+      console.log('🔔 Creating welcome notification for user:', user._id);
+      const notification = await createNotification(user._id, 'welcome', 'Welcome back to DevConnect!', ioInstance);
+      console.log('✅ Welcome notification created:', notification);
+    } catch (notifErr) {
+      console.error('❌ Failed to create welcome notification:', notifErr);
+    }
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ msg: 'Server error during login' });

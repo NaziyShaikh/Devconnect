@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import API from '../api/axios';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,22 +8,22 @@ const MyProjects = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
-  useEffect(() => {
-    fetchMyProjects();
-  }, []);
-
-  const fetchMyProjects = async () => {
+  const fetchMyProjects = useCallback(async () => {
     try {
       const res = await API.get('/projects');
       // Filter projects owned by current user
-      const myProjects = res.data.filter(project => project.owner._id === user.id);
+      const myProjects = res.data.filter(project => project.owner._id === user?.id);
       setProjects(myProjects);
     } catch (err) {
       console.error('Failed to fetch projects:', err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.id]);
+
+  useEffect(() => {
+    fetchMyProjects();
+  }, [fetchMyProjects]);
 
   if (loading) {
     return (

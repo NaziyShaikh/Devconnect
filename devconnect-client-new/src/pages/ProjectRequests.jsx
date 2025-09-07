@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import API from '../api/axios';
 
@@ -6,12 +6,12 @@ const ProjectRequests = () => {
   const { id } = useParams();
   const [project, setProject] = useState(null);
 
-  const fetchProject = async () => {
+  const fetchProject = useCallback(async () => {
     const res = await API.get(`/projects/${id}`);
     setProject(res.data);
-  };
+  }, [id]);
 
-  useEffect(() => { fetchProject(); }, []);
+  useEffect(() => { fetchProject(); }, [fetchProject]);
 
   const handleAction = async (userId, action) => {
     await API.patch(`/projects/${id}/respond`, { userId, accept: action === 'accept' });

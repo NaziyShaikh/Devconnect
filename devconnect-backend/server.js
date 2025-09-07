@@ -11,6 +11,7 @@ import projectRoutes from './routes/project.js';
 import joinRequestsRoutes from './routes/joinRequests-updated.js';
 import { setIoInstance as setJoinRequestsIoInstance } from './controllers/joinRequestsController-updated.js';
 import { setIoInstance } from './controllers/projectController.js';
+import { setIoInstance as setAuthIoInstance } from './controllers/authController.js';
 import messageRoutes from './routes/messages.js';
 import notificationRoutes from './routes/notification.js';
 import uploadRoutes from './routes/upload.js';
@@ -51,6 +52,9 @@ setIoInstance(io);
 // Set io instance for join requests controller
 setJoinRequestsIoInstance(io);
 
+// Set io instance for auth controller
+setAuthIoInstance(io);
+
 const corsOptions = {
   origin: clientOrigin,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -80,17 +84,30 @@ app.use('/api/admin', adminRoutes);
 
 
 
+import path from 'path';
+
 // Test route for debugging
 app.get('/api/test', (req, res) => {
   res.json({ msg: 'Test route working' });
 });
+
+// Serve a simple welcome message at the root URL
+app.get('/', (req, res) => {
+  res.send('<h1>Welcome to DevConnect Backend Server</h1><p>The API is running.</p>');
+});
+
+// Optional: Serve static files or frontend build if needed
+// app.use(express.static(path.join(__dirname, '../devconnect-client-new/build')));
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../devconnect-client-new/build', 'index.html'));
+// });
 
 io.on('connection', (socket) => {
   console.log('⚡ A user connected:', socket.id);
 
   socket.on('join', (userId) => {
     socket.join(userId);
-    console.log(`👤 User ${userId} joined room`);
+    console.log(`👤 User ${userId} joined room ${userId}`);
   });
 
   socket.on('sendMessage', async ({ senderId, receiverId, text }) => {

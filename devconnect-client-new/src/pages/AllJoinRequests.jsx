@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import API from '../api/axios';
 
 const AllJoinRequests = () => {
-  const { user } = useAuth();
+  const { } = useAuth();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

@@ -4,13 +4,21 @@ import { Link } from 'react-router-dom';
 const NotificationPopup = () => {
   const { popupNotifications, dismissPopupNotification } = useNotification();
 
+  console.log('🔔 NotificationPopup render - popupNotifications:', popupNotifications.length);
+
   const dismissAllNotifications = () => {
+    console.log('🔔 Dismissing all notifications');
     popupNotifications.forEach(popup => {
       dismissPopupNotification(popup.id);
     });
   };
 
-  if (popupNotifications.length === 0) return null;
+  if (popupNotifications.length === 0) {
+    console.log('🔔 No popup notifications to display');
+    return null;
+  }
+
+  console.log('🔔 Rendering popup notifications:', popupNotifications);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

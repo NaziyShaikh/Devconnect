@@ -4,6 +4,15 @@ import { useAuth } from './AuthContext';
 import io from 'socket.io-client';
 
 const socket = io(process.env.REACT_APP_API_URL || 'http://localhost:5001');
+console.log('🔌 Socket connecting to:', process.env.REACT_APP_API_URL || 'http://localhost:5001');
+
+socket.on('connect', () => {
+  console.log('🔌 Socket connected:', socket.id);
+});
+
+socket.on('disconnect', () => {
+  console.log('🔌 Socket disconnected');
+});
 
 const NotificationContext = createContext();
 export const useNotification = () => useContext(NotificationContext);
@@ -35,6 +44,7 @@ export const NotificationProvider = ({ children }) => {
   }, []);
 
   const showPopupNotification = useCallback((notification) => {
+    console.log('🔔 Showing popup notification:', notification);
     const popupId = Date.now() + Math.random();
     const popup = {
       id: popupId,
@@ -42,19 +52,32 @@ export const NotificationProvider = ({ children }) => {
       timestamp: new Date()
     };
 
-    setPopupNotifications(prev => [...prev, popup]);
-  }, []);
+    setPopupNotifications(prev => {
+      console.log('📋 Current popup notifications:', prev.length);
+      const newPopups = [...prev, popup];
+      console.log('📋 New popup notifications count:', newPopups.length);
+      return newPopups;
+    });
+
+    // Auto-dismiss after 10 seconds
+    setTimeout(() => {
+      console.log('⏰ Auto-dismissing popup notification:', popupId);
+      dismissPopupNotification(popupId);
+    }, 10000);
+  }, [dismissPopupNotification]);
 
   useEffect(() => {
     // Fetch notifications when user logs in or changes
     if (user) {
-      console.log('User logged in, fetching notifications...');
+      console.log('👤 User logged in, fetching notifications...');
+      console.log('🔗 Joining socket room for user:', user._id);
       fetchNotifications();
 
       // Join user's notification room for real-time updates
       socket.emit('join', user._id);
     } else {
       // Clear notifications when user logs out
+      console.log('🚪 User logged out, clearing notifications');
       setNotifications([]);
       setPopupNotifications([]);
     }

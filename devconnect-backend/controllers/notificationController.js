@@ -34,6 +34,7 @@ export const markAsRead = async (req, res) => {
 
 export const createNotification = async (userId, type, message, io) => {
   try {
+    console.log(`🔔 Creating notification: userId=${userId}, type=${type}, message=${message}`);
     let notifications = [];
 
     if (userId === null) {
@@ -59,17 +60,20 @@ export const createNotification = async (userId, type, message, io) => {
       // Single user notification
       const notification = await Notification.create({ user: userId, type, message });
       notifications = [notification];
+      console.log(`✅ Notification created in database: ${notification._id}`);
 
       // Emit real-time notification if io is available
       if (io) {
         io.to(userId).emit('notification', notification);
-        console.log(`🔔 Real-time notification emitted to user ${userId}`);
+        console.log(`📡 Real-time notification emitted to user ${userId}`);
+      } else {
+        console.log(`⚠️ No io instance available for real-time notification`);
       }
     }
 
     return notifications;
   } catch (err) {
-    console.error('Notification error:', err.message);
+    console.error('❌ Notification creation error:', err.message);
     return null;
   }
 };

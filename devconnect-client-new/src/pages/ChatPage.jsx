@@ -39,11 +39,17 @@ const ChatPage = () => {
   }, [userId]);
 
   useEffect(() => {
-    socket.on('receiveMessage', msg => {
+    socket.on('receive-message', msg => {
       console.log('📨 Received real-time message:', msg);
-      setMessages(prev => [...prev, msg]);
+      setMessages(prev => {
+        // Prevent duplicate messages
+        if (prev.some(m => m._id === msg._id)) {
+          return prev;
+        }
+        return [...prev, msg];
+      });
     });
-    return () => socket.off('receiveMessage');
+    return () => socket.off('receive-message');
   }, []);
 
   const send = async () => {
@@ -51,13 +57,13 @@ const ChatPage = () => {
     const msg = { receiverId: userId, text: text };
     try {
       const response = await API.post('/messages', msg);
-      setMessages([...messages, response.data]);
+      setMessages(prev => [...prev, response.data]);
 
       // Emit message via Socket.IO for real-time delivery
-      socket.emit('sendMessage', {
-        senderId: currentUser,
-        receiverId: userId,
-        text: text
+      socket.emit('send-message', {
+        sender: currentUser,
+        recipient: userId,
+        content: text
       });
 
       setText('');

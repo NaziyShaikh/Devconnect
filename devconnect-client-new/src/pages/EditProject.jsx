@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import API from '../api/axios';
 import { useAuth } from '../contexts/AuthContext';
@@ -20,17 +20,13 @@ const EditProject = () => {
   });
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    fetchProject();
-  }, [id]);
-
-  const fetchProject = async () => {
+  const fetchProject = useCallback(async () => {
     try {
       const res = await API.get(`/projects/${id}`);
       const project = res.data;
 
       // Check if user is the owner
-      if (project.owner._id !== user.id) {
+      if (project.owner._id !== user?.id) {
         navigate('/my-projects');
         return;
       }
@@ -50,7 +46,11 @@ const EditProject = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, user?.id, navigate]);
+
+  useEffect(() => {
+    fetchProject();
+  }, [fetchProject]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
