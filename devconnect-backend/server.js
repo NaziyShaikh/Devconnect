@@ -34,7 +34,11 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
-const clientOrigin = process.env.CLIENT_URL || 'http://localhost:3000';
+const clientOrigin = process.env.CLIENT_URL || [
+  'http://localhost:3000',
+  'https://devconnect-1-l42o.onrender.com',
+  'https://devconnect-oczl.onrender.com'
+];
 
 const io = new Server(server, {
   cors: {
