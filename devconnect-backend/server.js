@@ -31,7 +31,13 @@ console.log(`   CLIENT_URL: ${process.env.CLIENT_URL || 'http://localhost:3000'}
 console.log(`   MONGO_URI: ${process.env.MONGO_URI ? '✅ Set' : '❌ Missing'}`);
 
 // Connect to database
-connectDB();
+try {
+  connectDB();
+  console.log('✅ Database connection established');
+} catch (error) {
+  console.error('❌ Database connection failed:', error);
+  process.exit(1);
+}
 
 const app = express();
 const server = http.createServer(app);
@@ -110,15 +116,25 @@ app.options('*', cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 
+console.log('📋 Mounting API routes...');
 app.use('/api/auth', authRoutes);
+console.log('   ✅ Auth routes mounted at /api/auth');
 app.use('/api/users', userRoutes);
+console.log('   ✅ User routes mounted at /api/users');
 app.use('/api/projects', projectRoutes);
+console.log('   ✅ Project routes mounted at /api/projects');
 app.use('/api/join-requests', joinRequestsRoutes);
+console.log('   ✅ Join requests routes mounted at /api/join-requests');
 app.use('/api/messages', messageRoutes);
+console.log('   ✅ Message routes mounted at /api/messages');
 app.use('/api/notifications', notificationRoutes);
+console.log('   ✅ Notification routes mounted at /api/notifications');
 app.use('/api/upload', uploadRoutes);
+console.log('   ✅ Upload routes mounted at /api/upload');
 app.use('/api/local-upload', localUploadRoutes);
+console.log('   ✅ Local upload routes mounted at /api/local-upload');
 app.use('/api/admin', adminRoutes);
+console.log('   ✅ Admin routes mounted at /api/admin');
 
 // Test route for debugging
 app.get('/api/test', (req, res) => {

@@ -88,6 +88,11 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
+    console.log('🔐 Login attempt received');
+    console.log('   Request body:', { email: req.body.email, password: req.body.password ? '[HIDDEN]' : 'missing' });
+    console.log('   Request headers:', req.headers);
+    console.log('   Request cookies:', req.cookies);
+
     const { email, password } = req.body;
 
     // Validate required fields

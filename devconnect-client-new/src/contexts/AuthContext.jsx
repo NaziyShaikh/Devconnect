@@ -33,11 +33,18 @@ export const AuthProvider = ({ children }) => {
         console.log('   403 Forbidden - Access denied');
       } else if (error.response?.status >= 500) {
         console.log('   Server error - Backend might be down');
+      } else if (error.response?.status === 404) {
+        console.log('   404 Not Found - API endpoint not available');
       } else {
         console.log('   Other error - Network or client issue');
       }
 
-      throw error; // Re-throw to allow calling code to handle
+      // Don't throw error for 401/404 as these are expected when not logged in
+      if (error.response?.status === 401 || error.response?.status === 404) {
+        return null;
+      }
+
+      throw error; // Re-throw for other errors
     } finally {
       setLoading(false);
     }

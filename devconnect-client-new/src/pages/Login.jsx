@@ -20,26 +20,22 @@ const Login = () => {
     e.preventDefault();
     setError('');
     try {
+      console.log('🚀 Attempting login with:', { email: form.email, password: '[HIDDEN]' });
       const res = await API.post('/auth/login', form, { withCredentials: true });
-      console.log('Login response:', res.data);
+      console.log('✅ Login response:', res.data);
 
       if (res.data.user) {
-        try {
-          await fetchCurrentUser();
-          navigate('/developers');
-        } catch (fetchErr) {
-          console.error('Error fetching user after login:', fetchErr);
-          // Even if fetchCurrentUser fails, the login was successful
-          // The AuthContext will handle the error and set user to null
-          // But we should still navigate since the cookie is set
-          navigate('/developers');
-        }
+        // Set user immediately from login response
+        setUser(res.data.user);
+        console.log('👤 User set from login response:', res.data.user);
+        navigate('/developers');
       } else {
-        setError('Login failed: No user data');
+        setError('Login failed: No user data received');
       }
     } catch (err) {
-      console.error('Login error:', err);
-      setError(err.response?.data?.msg || 'Login failed');
+      console.error('❌ Login error:', err);
+      const errorMessage = err.response?.data?.msg || 'Login failed. Please check your credentials and try again.';
+      setError(errorMessage);
     }
   };
 
