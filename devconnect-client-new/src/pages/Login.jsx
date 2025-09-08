@@ -1,13 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import API from '../api/axios';
 import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { fetchCurrentUser } = useAuth();
+  const { fetchCurrentUser, user } = useAuth();
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    // If user is already logged in, redirect to developers page
+    if (user) {
+      navigate('/developers');
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -17,8 +24,16 @@ const Login = () => {
       console.log('Login response:', res.data);
 
       if (res.data.user) {
-        await fetchCurrentUser();
-        navigate('/developers');
+        try {
+          await fetchCurrentUser();
+          navigate('/developers');
+        } catch (fetchErr) {
+          console.error('Error fetching user after login:', fetchErr);
+          // Even if fetchCurrentUser fails, the login was successful
+          // The AuthContext will handle the error and set user to null
+          // But we should still navigate since the cookie is set
+          navigate('/developers');
+        }
       } else {
         setError('Login failed: No user data');
       }

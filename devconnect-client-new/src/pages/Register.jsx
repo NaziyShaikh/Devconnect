@@ -1,21 +1,49 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import API from '../api/axios';
+import { useAuth } from '../contexts/AuthContext';
 
 const Register = () => {
   const navigate = useNavigate();
+  const { user, fetchCurrentUser } = useAuth();
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'developer' });
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  useEffect(() => {
+    // If user is already logged in, redirect to developers page
+    if (user) {
+      navigate('/developers');
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async e => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     try {
       const res = await API.post('/auth/register', form, { withCredentials: true });
       console.log('Registration response:', res.data);
 
       if (res.data.user) {
-        navigate('/login');
+        setSuccess('Registration successful! You are now logged in.');
+        // After successful registration, try to fetch current user
+        // Since registration sets a cookie, this should work
+        try {
+          await fetchCurrentUser();
+          // Add a small delay to show the success message
+          setTimeout(() => {
+            navigate('/developers');
+          }, 2000);
+        } catch (fetchErr) {
+          console.error('Error fetching user after registration:', fetchErr);
+          // Even if fetchCurrentUser fails, the registration was successful
+          // The AuthContext will handle the error and set user to null
+          // But we should still navigate since the cookie is set
+          setTimeout(() => {
+            navigate('/developers');
+          }, 2000);
+        }
       } else {
         setError('Registration failed: No user data');
       }
@@ -37,6 +65,7 @@ const Register = () => {
         <div className="w-full max-w-md">
           <h2 className="text-4xl font-extrabold mb-8 text-gray-900 text-center">Register</h2>
           {error && <p className="mb-6 text-red-600 text-center font-semibold">{error}</p>}
+          {success && <p className="mb-6 text-green-600 text-center font-semibold">{success}</p>}
           <form onSubmit={handleSubmit} className="space-y-6">
             <input
               type="text"

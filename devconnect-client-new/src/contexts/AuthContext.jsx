@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
       const res = await API.get('/auth/me', { withCredentials: true }); // Ensure cookies are sent
       console.log('✅ Current user fetched successfully:', res.data);
       setUser(res.data);
+      return res.data;
     } catch (error) {
       console.error('❌ Error fetching current user:', error);
       console.error('   Error response:', error.response);
@@ -35,6 +36,8 @@ export const AuthProvider = ({ children }) => {
       } else {
         console.log('   Other error - Network or client issue');
       }
+
+      throw error; // Re-throw to allow calling code to handle
     } finally {
       setLoading(false);
     }
