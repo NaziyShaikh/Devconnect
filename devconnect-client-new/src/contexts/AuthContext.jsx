@@ -14,6 +14,9 @@ export const AuthProvider = ({ children }) => {
       console.log('🔍 Fetching current user...');
       const res = await API.get('/auth/me', { withCredentials: true }); // Ensure cookies are sent
       console.log('✅ Current user fetched successfully:', res.data);
+      console.log('   User ID:', res.data._id);
+      console.log('   User name:', res.data.name);
+      console.log('   User role:', res.data.role);
       setUser(res.data);
       return res.data;
     } catch (error) {
@@ -21,14 +24,15 @@ export const AuthProvider = ({ children }) => {
       console.error('   Error response:', error.response);
       console.error('   Error status:', error.response?.status);
       console.error('   Error data:', error.response?.data);
+      console.error('   Error config:', error.config);
 
       setUser(null);
 
       // Handle different types of auth errors
       if (error.response?.status === 401) {
         console.log('   401 Unauthorized - Token invalid or expired');
-        // No need to clear localStorage since we're using cookies
-        // The server should handle clearing the invalid cookie
+        // Try to clear any invalid cookies
+        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
       } else if (error.response?.status === 403) {
         console.log('   403 Forbidden - Access denied');
       } else if (error.response?.status >= 500) {

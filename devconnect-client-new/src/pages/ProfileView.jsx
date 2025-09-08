@@ -16,22 +16,46 @@ const ProfileView = () => {
       try {
         setLoading(true);
         setError(null);
-        
+
+        console.log('🔍 ProfileView - Fetching profile...');
+        console.log('   userId from URL:', userId);
+        console.log('   user from context:', user);
+        console.log('   user._id:', user?._id);
+
         // If userId is provided in URL, fetch that user's profile
         // Otherwise, fetch the logged-in user's profile
         const profileId = userId || user?._id;
-        
+
+        console.log('   profileId to fetch:', profileId);
+
         if (!profileId) {
-          setError('No user ID provided');
+          console.log('❌ No profileId available');
+          if (!user) {
+            setError('Please log in to view your profile.');
+          } else {
+            setError('No user ID provided. Please try again.');
+          }
           setLoading(false);
           return;
         }
 
+        console.log('🚀 Making API call to:', `/users/${profileId}`);
         const res = await API.get(`/users/${profileId}`);
+        console.log('✅ Profile fetched successfully:', res.data);
         setProfile(res.data);
       } catch (err) {
-        console.error('Failed to fetch profile:', err);
-        setError('Failed to load profile. Please try again.');
+        console.error('❌ Failed to fetch profile:', err);
+        console.error('   Error response:', err.response);
+        console.error('   Error status:', err.response?.status);
+        console.error('   Error data:', err.response?.data);
+
+        if (err.response?.status === 401) {
+          setError('Authentication required. Please log in to view profiles.');
+        } else if (err.response?.status === 404) {
+          setError('Profile not found.');
+        } else {
+          setError('Failed to load profile. Please try again.');
+        }
       } finally {
         setLoading(false);
       }
