@@ -1,8 +1,8 @@
-const Profile = require('../models/Profile');
-const User = require('../models/User');
+import Profile from '../models/Profile.js';
+import User from '../models/User.js';
 
 // Create or Update profile
-exports.createOrUpdateProfile = async (req, res) => {
+export const createOrUpdateProfile = async (req, res) => {
   const { bio, skills, github, portfolio } = req.body;
 
   const profileFields = {
@@ -36,20 +36,20 @@ exports.createOrUpdateProfile = async (req, res) => {
 };
 
 // Get my profile
-exports.getMyProfile = async (req, res) => {
+export const getMyProfile = async (req, res) => {
   const profile = await Profile.findOne({ user: req.user._id }).populate('user', ['username', 'email']);
   if (!profile) return res.status(404).json({ message: 'Profile not found' });
   res.json(profile);
 };
 
 // Get all profiles
-exports.getAllProfiles = async (req, res) => {
+export const getAllProfiles = async (req, res) => {
   const profiles = await Profile.find().populate('user', ['username', 'email']);
   res.json(profiles);
 };
 
 // Get profile by user ID
-exports.getProfileByUserId = async (req, res) => {
+export const getProfileByUserId = async (req, res) => {
   try {
     const profile = await Profile.findOne({ user: req.params.userId }).populate('user', ['username', 'email']);
     if (!profile) return res.status(404).json({ message: 'Profile not found' });
@@ -60,7 +60,7 @@ exports.getProfileByUserId = async (req, res) => {
 };
 
 // Delete my profile
-exports.deleteMyProfile = async (req, res) => {
+export const deleteMyProfile = async (req, res) => {
   await Profile.findOneAndDelete({ user: req.user._id });
   res.json({ message: 'Profile deleted' });
 };
