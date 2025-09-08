@@ -4,6 +4,8 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { connectDB } from './config/db.js';
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
@@ -117,10 +119,6 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/local-upload', localUploadRoutes);
 app.use('/api/admin', adminRoutes);
 
-
-
-import path from 'path';
-
 // Test route for debugging
 app.get('/api/test', (req, res) => {
   res.json({ msg: 'Test route working' });
@@ -130,6 +128,10 @@ app.get('/api/test', (req, res) => {
 app.get('/', (req, res) => {
   res.send('<h1>Welcome to DevConnect Backend Server</h1><p>The API is running.</p>');
 });
+
+// Get __dirname equivalent for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Serve static files from the React app build directory
 app.use(express.static(path.join(__dirname, '../devconnect-client-new/build')));
