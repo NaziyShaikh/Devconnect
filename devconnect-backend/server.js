@@ -41,6 +41,7 @@ const clientOrigin = process.env.CLIENT_URL || 'http://localhost:3000';
 // Allow multiple origins for production
 const allowedOrigins = [
   'http://localhost:3000',
+  'http://localhost:3001',
   'https://devconnect-1-l42o.onrender.com',
   'https://devconnect-oczl.onrender.com'
 ];
@@ -56,7 +57,7 @@ const corsOriginFunction = (origin, callback) => {
   // Allow specific deployed domains
   if (allowedOrigins.includes(origin)) return callback(null, true);
 
-  // Reject other origins
+  console.log('🚫 CORS rejected origin:', origin);
   return callback(new Error('Not allowed by CORS'));
 };
 
