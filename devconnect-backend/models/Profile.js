@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const profileSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', unique: true },
@@ -8,4 +8,4 @@ const profileSchema = new mongoose.Schema({
   portfolio: String,
 });
 
-module.exports = mongoose.model('Profile', profileSchema);
+export default mongoose.model('Profile', profileSchema);

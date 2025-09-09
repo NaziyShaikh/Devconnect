@@ -38,11 +38,14 @@ export const register = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const username = email.split('@')[0];
+
     const newUser = new User({ 
       name, 
       email, 
       password: hashedPassword, 
-      role: role || 'developer' 
+      role: role || 'developer',
+      username,  // set username here
     });
     
     await newUser.save();
