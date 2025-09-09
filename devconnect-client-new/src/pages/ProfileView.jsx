@@ -24,7 +24,7 @@ const ProfileView = () => {
 
         // If userId is provided in URL, fetch that user's profile
         // Otherwise, fetch the logged-in user's profile
-        const profileId = userId || user?._id;
+        const profileId = userId || user?._id || user?.id;
 
         console.log('   profileId to fetch:', profileId);
 
@@ -69,7 +69,7 @@ const ProfileView = () => {
     navigate('/profile-setup');
   };
 
-  const isOwnProfile = !userId || userId === user?._id;
+  const isOwnProfile = !userId || userId === (user?._id || user?.id);
 
   if (loading) {
   return (

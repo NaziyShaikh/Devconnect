@@ -73,11 +73,11 @@ export const NotificationProvider = ({ children }) => {
     // Fetch notifications when user logs in or changes
     if (user) {
       console.log('👤 User logged in, fetching notifications...');
-      console.log('🔗 Joining socket room for user:', user._id);
+      console.log('🔗 Joining socket room for user:', user._id || user.id);
       fetchNotifications();
 
       // Join user's notification room for real-time updates
-      socket.emit('join', user._id);
+      socket.emit('join', user._id || user.id);
     } else {
       // Clear notifications when user logs out
       console.log('🚪 User logged out, clearing notifications');

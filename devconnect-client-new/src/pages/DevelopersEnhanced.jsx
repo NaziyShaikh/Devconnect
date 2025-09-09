@@ -31,7 +31,7 @@ const DevelopersEnhanced = () => {
       try {
         const res = await API.get('/users');
 
-        if (!user || !user._id) {
+        if (!user || (!user._id && !user.id)) {
           // If no logged-in user, show all users (developers and admins)
           const allUsers = res.data;
           setDevs(allUsers);
@@ -40,7 +40,7 @@ const DevelopersEnhanced = () => {
           setFilteredAdmins(allUsers.filter(u => u.role === 'admin'));
         } else {
           // If logged-in user, filter out their own profile but include admins and other developers
-          const allUsers = res.data.filter(u => u._id !== user._id);
+          const allUsers = res.data.filter(u => u._id !== (user._id || user.id));
           setDevs(allUsers);
           setFilteredDevs(allUsers);
           setAdmins(allUsers.filter(u => u.role === 'admin'));
@@ -176,7 +176,7 @@ const DevelopersEnhanced = () => {
                         View Profile
                       </button>
                     </Link>
-                    {user && user._id && dev._id ? (
+                    {user && (user._id || user.id) && dev._id ? (
                       <Link to={`/chat/${dev._id}`} className="flex-1">
                         <button className="w-full bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition duration-200 text-sm font-medium">
                           Chat
@@ -248,7 +248,7 @@ const DevelopersEnhanced = () => {
                         View Profile
                       </button>
                     </Link>
-                    {user && user._id && admin._id ? (
+                    {user && (user._id || user.id) && admin._id ? (
                       <Link to={`/chat/${admin._id}`} className="flex-1">
                         <button className="w-full bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition duration-200 text-sm font-medium">
                           Chat
