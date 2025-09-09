@@ -32,19 +32,23 @@ const DevelopersEnhanced = () => {
         const res = await API.get('/users');
 
         if (!user || (!user._id && !user.id)) {
-          // If no logged-in user, show all users (developers and admins)
+          // If no logged-in user, show developers and admins separately
           const allUsers = res.data;
-          setDevs(allUsers);
-          setFilteredDevs(allUsers);
-          setAdmins(allUsers.filter(u => u.role === 'admin'));
-          setFilteredAdmins(allUsers.filter(u => u.role === 'admin'));
+          const developers = allUsers.filter(u => u.role === 'developer');
+          const adminUsers = allUsers.filter(u => u.role === 'admin');
+          setDevs(developers);
+          setFilteredDevs(developers);
+          setAdmins(adminUsers);
+          setFilteredAdmins(adminUsers);
         } else {
-          // If logged-in user, filter out their own profile but include admins and other developers
+          // If logged-in user, filter out their own profile but include other developers and admins
           const allUsers = res.data.filter(u => u._id !== (user._id || user.id));
-          setDevs(allUsers);
-          setFilteredDevs(allUsers);
-          setAdmins(allUsers.filter(u => u.role === 'admin'));
-          setFilteredAdmins(allUsers.filter(u => u.role === 'admin'));
+          const developers = allUsers.filter(u => u.role === 'developer');
+          const adminUsers = allUsers.filter(u => u.role === 'admin');
+          setDevs(developers);
+          setFilteredDevs(developers);
+          setAdmins(adminUsers);
+          setFilteredAdmins(adminUsers);
         }
       } catch (error) {
         console.error('Error fetching users:', error);
