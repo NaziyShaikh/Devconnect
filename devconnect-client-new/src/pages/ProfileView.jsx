@@ -24,6 +24,7 @@ const ProfileView = () => {
 
         // If userId is provided in URL, fetch that user's profile
         // Otherwise, fetch the logged-in user's profile
+        // Fix: Use user._id or user.id consistently for logged-in user
         const profileId = userId || user?._id || user?.id;
 
         console.log('   profileId to fetch:', profileId);
