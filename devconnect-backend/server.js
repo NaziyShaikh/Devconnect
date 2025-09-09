@@ -19,6 +19,7 @@ import notificationRoutes from './routes/notification.js';
 import uploadRoutes from './routes/upload.js';
 import localUploadRoutes from './routes/local-upload.js';
 import adminRoutes from './routes/admin.js';
+import profileRoutes from './routes/profileRoutes.js';
 
 dotenv.config();
 
@@ -135,6 +136,8 @@ app.use('/api/local-upload', localUploadRoutes);
 console.log('   ✅ Local upload routes mounted at /api/local-upload');
 app.use('/api/admin', adminRoutes);
 console.log('   ✅ Admin routes mounted at /api/admin');
+app.use('/api/profiles', profileRoutes);
+console.log('   ✅ Profile routes mounted at /api/profiles');
 
 // Test route for debugging
 app.get('/api/test', (req, res) => {
