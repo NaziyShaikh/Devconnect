@@ -12,14 +12,14 @@ const MyProjects = () => {
     try {
       const res = await API.get('/projects');
       // Filter projects owned by current user
-      const myProjects = res.data.filter(project => project.owner._id === user?.id);
+      const myProjects = res.data.filter(project => project.owner._id === (user?._id || user?.id));
       setProjects(myProjects);
     } catch (err) {
       console.error('Failed to fetch projects:', err);
     } finally {
       setLoading(false);
     }
-  }, [user?.id]);
+  }, [user?._id, user?.id]);
 
   useEffect(() => {
     fetchMyProjects();

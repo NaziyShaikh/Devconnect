@@ -41,8 +41,8 @@ const ProfileView = () => {
         }
 
         // Use profileId variable here instead of userId || 'me'
-        console.log('🚀 Making API call to:', `/api/profiles/${profileId}`);
-        const res = await API.get(`/api/profiles/${profileId}`);
+        console.log('🚀 Making API call to:', `/profiles/${profileId}`);
+        const res = await API.get(`/profiles/${profileId}`);
         console.log('✅ Profile fetched successfully:', res.data);
         setProfile(res.data);
       } catch (err) {

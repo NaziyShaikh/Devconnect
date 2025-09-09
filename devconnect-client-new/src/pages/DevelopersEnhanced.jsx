@@ -36,19 +36,65 @@ const DevelopersEnhanced = () => {
           const allUsers = res.data;
           const developers = allUsers.filter(u => u.role === 'developer');
           const adminUsers = allUsers.filter(u => u.role === 'admin');
-          setDevs(developers);
-          setFilteredDevs(developers);
-          setAdmins(adminUsers);
-          setFilteredAdmins(adminUsers);
+
+          // Fetch profiles for developers
+          const developersWithProfiles = await Promise.all(developers.map(async (dev) => {
+            try {
+              const profileRes = await API.get(`/profiles/${dev._id}`);
+              return { ...dev, ...profileRes.data };
+            } catch (error) {
+              console.error(`Failed to fetch profile for developer ${dev._id}:`, error);
+              return dev;
+            }
+          }));
+
+          // Fetch profiles for admins
+          const adminsWithProfiles = await Promise.all(adminUsers.map(async (admin) => {
+            try {
+              const profileRes = await API.get(`/profiles/${admin._id}`);
+              return { ...admin, ...profileRes.data };
+            } catch (error) {
+              console.error(`Failed to fetch profile for admin ${admin._id}:`, error);
+              return admin;
+            }
+          }));
+
+          setDevs(developersWithProfiles);
+          setFilteredDevs(developersWithProfiles);
+          setAdmins(adminsWithProfiles);
+          setFilteredAdmins(adminsWithProfiles);
         } else {
           // If logged-in user, filter out their own profile but include other developers and admins
           const allUsers = res.data.filter(u => u._id !== (user._id || user.id));
           const developers = allUsers.filter(u => u.role === 'developer');
           const adminUsers = allUsers.filter(u => u.role === 'admin');
-          setDevs(developers);
-          setFilteredDevs(developers);
-          setAdmins(adminUsers);
-          setFilteredAdmins(adminUsers);
+
+          // Fetch profiles for developers
+          const developersWithProfiles = await Promise.all(developers.map(async (dev) => {
+            try {
+              const profileRes = await API.get(`/profiles/${dev._id}`);
+              return { ...dev, ...profileRes.data };
+            } catch (error) {
+              console.error(`Failed to fetch profile for developer ${dev._id}:`, error);
+              return dev;
+            }
+          }));
+
+          // Fetch profiles for admins
+          const adminsWithProfiles = await Promise.all(adminUsers.map(async (admin) => {
+            try {
+              const profileRes = await API.get(`/profiles/${admin._id}`);
+              return { ...admin, ...profileRes.data };
+            } catch (error) {
+              console.error(`Failed to fetch profile for admin ${admin._id}:`, error);
+              return admin;
+            }
+          }));
+
+          setDevs(developersWithProfiles);
+          setFilteredDevs(developersWithProfiles);
+          setAdmins(adminsWithProfiles);
+          setFilteredAdmins(adminsWithProfiles);
         }
       } catch (error) {
         console.error('Error fetching users:', error);
