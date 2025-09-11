@@ -41,10 +41,16 @@ const DevelopersEnhanced = () => {
           const developersWithProfiles = await Promise.all(developers.map(async (dev) => {
             try {
               const profileRes = await API.get(`/profiles/${dev._id}`);
-              return { ...dev, ...profileRes.data };
+              return { ...dev, ...profileRes.data, hasProfile: true };
             } catch (error) {
-              console.error(`Failed to fetch profile for developer ${dev._id}:`, error);
-              return dev;
+              if (error.response?.status === 404) {
+                // Profile doesn't exist, return user with hasProfile: false
+                return { ...dev, hasProfile: false };
+              } else {
+                // Other error, log but still return user
+                console.warn(`Failed to fetch profile for developer ${dev._id}:`, error.message);
+                return { ...dev, hasProfile: false };
+              }
             }
           }));
 
@@ -52,10 +58,16 @@ const DevelopersEnhanced = () => {
           const adminsWithProfiles = await Promise.all(adminUsers.map(async (admin) => {
             try {
               const profileRes = await API.get(`/profiles/${admin._id}`);
-              return { ...admin, ...profileRes.data };
+              return { ...admin, ...profileRes.data, hasProfile: true };
             } catch (error) {
-              console.error(`Failed to fetch profile for admin ${admin._id}:`, error);
-              return admin;
+              if (error.response?.status === 404) {
+                // Profile doesn't exist, return user with hasProfile: false
+                return { ...admin, hasProfile: false };
+              } else {
+                // Other error, log but still return user
+                console.warn(`Failed to fetch profile for admin ${admin._id}:`, error.message);
+                return { ...admin, hasProfile: false };
+              }
             }
           }));
 
@@ -73,10 +85,16 @@ const DevelopersEnhanced = () => {
           const developersWithProfiles = await Promise.all(developers.map(async (dev) => {
             try {
               const profileRes = await API.get(`/profiles/${dev._id}`);
-              return { ...dev, ...profileRes.data };
+              return { ...dev, ...profileRes.data, hasProfile: true };
             } catch (error) {
-              console.error(`Failed to fetch profile for developer ${dev._id}:`, error);
-              return dev;
+              if (error.response?.status === 404) {
+                // Profile doesn't exist, return user with hasProfile: false
+                return { ...dev, hasProfile: false };
+              } else {
+                // Other error, log but still return user
+                console.warn(`Failed to fetch profile for developer ${dev._id}:`, error.message);
+                return { ...dev, hasProfile: false };
+              }
             }
           }));
 
@@ -84,10 +102,16 @@ const DevelopersEnhanced = () => {
           const adminsWithProfiles = await Promise.all(adminUsers.map(async (admin) => {
             try {
               const profileRes = await API.get(`/profiles/${admin._id}`);
-              return { ...admin, ...profileRes.data };
+              return { ...admin, ...profileRes.data, hasProfile: true };
             } catch (error) {
-              console.error(`Failed to fetch profile for admin ${admin._id}:`, error);
-              return admin;
+              if (error.response?.status === 404) {
+                // Profile doesn't exist, return user with hasProfile: false
+                return { ...admin, hasProfile: false };
+              } else {
+                // Other error, log but still return user
+                console.warn(`Failed to fetch profile for admin ${admin._id}:`, error.message);
+                return { ...admin, hasProfile: false };
+              }
             }
           }));
 
@@ -188,9 +212,16 @@ const DevelopersEnhanced = () => {
 
                 {/* Developer Info */}
                 <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-800 mb-2 text-center">{dev.name}</h3>
+                  <div className="flex items-center justify-center mb-2">
+                    <h3 className="text-xl font-bold text-gray-800 text-center">{dev.name}</h3>
+                    {!dev.hasProfile && (
+                      <span className="ml-2 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-medium">
+                        Profile Incomplete
+                      </span>
+                    )}
+                  </div>
                   <p className="text-gray-600 text-sm mb-3 text-center line-clamp-2">
-                    {dev.bio || 'Passionate developer ready to collaborate'}
+                    {dev.bio || (dev.hasProfile ? 'Passionate developer ready to collaborate' : 'Profile not yet created')}
                   </p>
 
                   {/* Location */}
@@ -276,9 +307,16 @@ const DevelopersEnhanced = () => {
 
                 {/* Admin Info */}
                 <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-800 mb-2 text-center">{admin.name}</h3>
+                  <div className="flex items-center justify-center mb-2">
+                    <h3 className="text-xl font-bold text-gray-800 text-center">{admin.name}</h3>
+                    {!admin.hasProfile && (
+                      <span className="ml-2 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-medium">
+                        Profile Incomplete
+                      </span>
+                    )}
+                  </div>
                   <p className="text-gray-600 text-sm mb-3 text-center line-clamp-2">
-                    {admin.bio || 'Administrator'}
+                    {admin.bio || (admin.hasProfile ? 'Administrator' : 'Profile not yet created')}
                   </p>
 
                   {/* Location */}
