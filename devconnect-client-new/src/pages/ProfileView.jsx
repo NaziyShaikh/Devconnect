@@ -63,7 +63,7 @@ const ProfileView = () => {
             navigate('/profile-setup');
             return;
           } else {
-            setError('Profile not found.');
+            setError('This user hasn\'t set up their profile yet. They may still be completing their information.');
           }
         } else {
           setError('Failed to load profile. Please try again.');
@@ -81,9 +81,9 @@ const ProfileView = () => {
   };
 
   if (loading) {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex justify-center items-center py-20">
             <div className="text-center">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
