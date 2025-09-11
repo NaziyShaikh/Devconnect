@@ -49,10 +49,15 @@ const ProfileView = () => {
         console.log('✅ Profile fetched successfully:', res.data);
         setProfile(res.data);
       } catch (err) {
-        console.error('❌ Failed to fetch profile:', err);
-        console.error('   Error response:', err.response);
-        console.error('   Error status:', err.response?.status);
-        console.error('   Error data:', err.response?.data);
+        // Use console.warn for 404 errors as they're expected for users without profiles
+        if (err.response?.status === 404) {
+          console.warn('⚠️ Profile not found:', err.response?.data?.message || 'Profile does not exist');
+        } else {
+          console.error('❌ Failed to fetch profile:', err);
+          console.error('   Error response:', err.response);
+          console.error('   Error status:', err.response?.status);
+          console.error('   Error data:', err.response?.data);
+        }
 
         if (err.response?.status === 401) {
           setError('Authentication required. Please log in to view profiles.');
@@ -63,7 +68,8 @@ const ProfileView = () => {
             navigate('/profile-setup');
             return;
           } else {
-            setError('This user hasn\'t set up their profile yet. They may still be completing their information.');
+            // For other users' profiles, show a user-friendly message
+            setError('This user hasn\'t created their profile yet. They may still be setting up their information.');
           }
         } else {
           setError('Failed to load profile. Please try again.');
@@ -147,18 +153,18 @@ const ProfileView = () => {
         <div className="bg-gradient-to-r from-blue-400 to-purple-500 p-8 text-white">
           <div className="flex items-center space-x-6">
             {profile.profilePicture ? (
-              <img 
-                src={profile.profilePicture} 
-                alt={profile.name}
+              <img
+                src={profile.profilePicture}
+                alt={profile.user?.name || 'Profile'}
                 className="w-24 h-24 rounded-full object-cover border-4 border-white"
               />
             ) : (
               <div className="w-24 h-24 rounded-full bg-white bg-opacity-20 flex items-center justify-center border-4 border-white">
-                <span className="text-3xl text-white">{profile.name?.charAt(0)?.toUpperCase()}</span>
+                <span className="text-3xl text-white">{profile.user?.name?.charAt(0)?.toUpperCase() || 'U'}</span>
               </div>
             )}
             <div>
-              <h1 className="text-3xl font-bold">{profile.name}</h1>
+              <h1 className="text-3xl font-bold">{profile.user?.name || 'User'}</h1>
               <p className="text-blue-100">{profile.role || 'Developer'}</p>
               {profile.location && (
                 <p className="text-blue-100 mt-1">📍 {profile.location}</p>
@@ -251,10 +257,10 @@ const ProfileView = () => {
                     </a>
                   </div>
                 )}
-                {profile.email && (
+                {profile.user?.email && (
                   <div className="flex items-center">
                     <span className="w-24 font-medium text-gray-700">Email:</span>
-                    <span className="text-gray-700">{profile.email}</span>
+                    <span className="text-gray-700">{profile.user.email}</span>
                   </div>
                 )}
               </div>

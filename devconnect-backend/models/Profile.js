@@ -6,6 +6,13 @@ const profileSchema = new mongoose.Schema({
   skills: [String],
   github: String,
   portfolio: String,
+  experience: String,
+  location: String,
+  role: { type: String, default: 'Developer' },
+  profilePicture: String,
+  resume: String,
+}, {
+  timestamps: true
 });
 
 export default mongoose.model('Profile', profileSchema);

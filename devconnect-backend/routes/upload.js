@@ -62,30 +62,56 @@ router.post('/resume', verifyToken, upload.single('file'), async (req, res) => {
   try {
     console.log('Resume upload route called');
     console.log('File received:', req.file);
-    
+
     if (!req.file) {
       return res.status(400).json({ msg: 'No file uploaded' });
     }
-    
+
     // Validate that it's a PDF file
     if (req.file.mimetype !== 'application/pdf') {
       return res.status(400).json({ msg: 'Only PDF files are allowed for resumes' });
     }
-    
+
+    // Validate file size (PDFs can be larger, allow up to 10MB)
+    if (req.file.size > 10 * 1024 * 1024) {
+      return res.status(400).json({ msg: 'File too large. Maximum size is 10MB for PDFs' });
+    }
+
     console.log('File mimetype:', req.file.mimetype);
+    console.log('File size:', req.file.size);
     console.log('File buffer length:', req.file.buffer.length);
-    
+
     const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
     console.log('File string length:', fileStr.length);
-    
+
     console.log('Uploading resume to cloudinary...');
     const uploadedResponse = await cloudinary.uploader.upload(fileStr, {
       resource_type: "auto",
+      folder: "devconnect-resumes",
+      // Add specific settings for PDF uploads
+      format: "pdf",
+      type: "upload"
     });
     console.log('Resume upload successful:', uploadedResponse.secure_url);
     res.json({ url: uploadedResponse.secure_url });
   } catch (err) {
-    console.error('Resume upload error:', err);
+    console.error('Resume upload error details:', {
+      message: err.message,
+      name: err.name,
+      stack: err.stack
+    });
+
+    // Handle specific Cloudinary errors
+    if (err.message.includes('Invalid API key')) {
+      return res.status(500).json({ msg: 'Cloudinary configuration error: Invalid API key' });
+    }
+    if (err.message.includes('Invalid cloud name')) {
+      return res.status(500).json({ msg: 'Cloudinary configuration error: Invalid cloud name' });
+    }
+    if (err.message.includes('File size too large')) {
+      return res.status(400).json({ msg: 'File size too large for Cloudinary upload' });
+    }
+
     res.status(500).json({ msg: 'Resume upload failed', error: err.message });
   }
 });

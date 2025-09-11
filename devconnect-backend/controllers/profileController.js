@@ -3,14 +3,19 @@ import User from '../models/User.js';
 
 // Create or Update profile
 export const createOrUpdateProfile = async (req, res) => {
-  const { bio, skills, github, portfolio } = req.body;
+  const { bio, skills, github, portfolio, experience, location, role, profilePicture, resume } = req.body;
 
   const profileFields = {
     user: req.user._id,
     bio,
     skills,
     github,
-    portfolio
+    portfolio,
+    experience,
+    location,
+    role,
+    profilePicture,
+    resume
   };
 
   try {

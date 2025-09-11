@@ -25,7 +25,10 @@ const ProfileSetup = () => {
         bio: form.bio,
         skills: form.skills.split(',').map(s => s.trim()).filter(s => s),
         github: form.github,
-        portfolio: form.portfolio
+        portfolio: form.portfolio,
+        experience: form.experience,
+        profilePicture: form.profilePicture,
+        resume: form.resume
       };
 
       console.log('📝 Creating/updating profile:', profileData);
