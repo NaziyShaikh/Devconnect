@@ -59,13 +59,15 @@ export const register = async (req, res) => {
     // Determine cookie settings based on environment
     const isProduction = process.env.NODE_ENV === 'production';
     const isHttps = req.protocol === 'https';
+    const isLocalhost = req.hostname === 'localhost' || req.hostname === '127.0.0.1';
 
-    // For development with different ports, use lax and no secure
+    // Enhanced cookie settings for better cross-domain compatibility
     const cookieOptions = {
       httpOnly: true,
-      secure: isProduction && isHttps, // secure only in production with https
-      sameSite: isProduction ? 'none' : 'lax', // none in production for cross-site cookies
-      maxAge: 24 * 60 * 60 * 1000,
+      secure: isProduction && isHttps && !isLocalhost, // secure only in production with https, not for localhost
+      sameSite: isProduction && !isLocalhost ? 'none' : 'lax', // none in production for cross-site, lax for localhost
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      domain: isLocalhost ? undefined : process.env.COOKIE_DOMAIN, // set domain for production
     };
 
     console.log('🍪 Setting cookie with options:', cookieOptions);
@@ -134,13 +136,15 @@ export const login = async (req, res) => {
     // Determine cookie settings based on environment
     const isProduction = process.env.NODE_ENV === 'production';
     const isHttps = req.protocol === 'https';
+    const isLocalhost = req.hostname === 'localhost' || req.hostname === '127.0.0.1';
 
-    // For development with different ports, use lax and no secure
+    // Enhanced cookie settings for better cross-domain compatibility
     const cookieOptions = {
       httpOnly: true,
-      secure: isProduction && isHttps, // secure only in production with https
-      sameSite: isProduction ? 'none' : 'lax', // none in production for cross-site cookies
-      maxAge: 24 * 60 * 60 * 1000,
+      secure: isProduction && isHttps && !isLocalhost, // secure only in production with https, not for localhost
+      sameSite: isProduction && !isLocalhost ? 'none' : 'lax', // none in production for cross-site, lax for localhost
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      domain: isLocalhost ? undefined : process.env.COOKIE_DOMAIN, // set domain for production
     };
 
     console.log('🍪 Setting login cookie with options:', cookieOptions);
@@ -171,7 +175,72 @@ export const login = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  res.clearCookie('token').json({ msg: 'Logged out' });
+  // Determine cookie settings based on environment for proper clearing
+  const isProduction = process.env.NODE_ENV === 'production';
+  const isHttps = req.protocol === 'https';
+  const isLocalhost = req.hostname === 'localhost' || req.hostname === '127.0.0.1';
+
+  const cookieOptions = {
+    httpOnly: true,
+    secure: isProduction && isHttps && !isLocalhost,
+    sameSite: isProduction && !isLocalhost ? 'none' : 'lax',
+    domain: isLocalhost ? undefined : process.env.COOKIE_DOMAIN,
+  };
+
+  console.log('🚪 Clearing cookie with options:', cookieOptions);
+  res.clearCookie('token', cookieOptions).json({ msg: 'Logged out' });
+};
+
+export const refreshToken = async (req, res) => {
+  try {
+    console.log('🔄 Token refresh requested');
+    console.log('   Current user:', req.user);
+
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ msg: 'No valid session found' });
+    }
+
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    // Generate new token
+    const newToken = jwt.sign(
+      { id: user._id, role: user.role, name: user.name },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
+    // Determine cookie settings based on environment
+    const isProduction = process.env.NODE_ENV === 'production';
+    const isHttps = req.protocol === 'https';
+    const isLocalhost = req.hostname === 'localhost' || req.hostname === '127.0.0.1';
+
+    const cookieOptions = {
+      httpOnly: true,
+      secure: isProduction && isHttps && !isLocalhost,
+      sameSite: isProduction && !isLocalhost ? 'none' : 'lax',
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      domain: isLocalhost ? undefined : process.env.COOKIE_DOMAIN,
+    };
+
+    console.log('🔄 Setting new token cookie with options:', cookieOptions);
+
+    res.cookie('token', newToken, cookieOptions).json({
+      user: {
+        id: user._id,
+        name: user.name,
+        role: user.role,
+        email: user.email
+      },
+      token: newToken,
+      msg: 'Token refreshed successfully'
+    });
+  } catch (err) {
+    console.error('Token refresh error:', err);
+    res.status(500).json({ msg: 'Server error during token refresh' });
+  }
 };
 
 export const getCurrentUser = async (req, res) => {

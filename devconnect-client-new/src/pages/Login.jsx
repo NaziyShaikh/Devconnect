@@ -28,6 +28,13 @@ const Login = () => {
         // Set user immediately from login response
         setUser(res.data.user);
         console.log('👤 User set from login response:', res.data.user);
+
+        // Store token in localStorage as backup
+        if (res.data.token) {
+          localStorage.setItem('token', res.data.token);
+          console.log('🔑 Token stored in localStorage');
+        }
+
         navigate('/developers');
       } else {
         setError('Login failed: No user data received');

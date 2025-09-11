@@ -27,6 +27,13 @@ const Register = () => {
 
       if (res.data.user) {
         setSuccess('Registration successful! You are now logged in.');
+
+        // Store token in localStorage as backup
+        if (res.data.token) {
+          localStorage.setItem('token', res.data.token);
+          console.log('🔑 Token stored in localStorage');
+        }
+
         // After successful registration, try to fetch current user
         // Since registration sets a cookie, this should work
         try {

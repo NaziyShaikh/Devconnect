@@ -1,72 +1,46 @@
-# DevConnect Fixes - Task Completion
+# TODO: Fix 401 Unauthorized Error
 
-## ✅ Completed Tasks
+## Problem Analysis
+- Frontend axios requests are failing with 401 status
+- Backend auth middleware expects token in Authorization header or cookie
+- Error occurs on /api/auth/me and /api/notifications endpoints
+- Token may be expired, invalid, or not being sent properly
 
-### 1. Fixed React ESLint Warnings
-- [x] Removed unused `user` variable from destructuring in `AllJoinRequests.jsx`
-- [x] Added eslint-disable comment for unused `admins` variable in `DevelopersEnhanced.jsx`
-- [x] Wrapped `fetchProject` in `useCallback` with proper dependencies in `EditProject.jsx`
-- [x] Wrapped `fetchMyProjects` in `useCallback` with proper dependencies in `MyProjects.jsx`
-- [x] Wrapped `fetchProject` in `useCallback` with proper dependencies in `ProjectRequests.jsx`
+## Steps to Fix
 
-### 2. Fixed Popup Notification Auto-Dismiss
-- [x] Added 10-second auto-dismiss timer for popup notifications in `NotificationContext.jsx`
-- [x] Notifications now disappear automatically after 10 seconds
+### 1. Verify Cookie/Token Handling
+- [x] Check if token cookie is being set properly on login/register
+- [x] Verify cookie options (secure, sameSite, domain) work in current environment
+- [x] Confirm frontend sends cookies with requests (withCredentials: true)
+- [x] Add Authorization header fallback in axios
+- [x] Store token in localStorage as backup
+- [x] Update logout to clear localStorage token
 
-### 3. Fixed Chat Double Messages
-- [x] Fixed socket event name mismatch in `ChatPage.jsx` (sendMessage -> send-message, receiveMessage -> receive-message)
-- [x] Added duplicate message prevention by checking message IDs
-- [x] Updated socket event handling for proper real-time communication
+### 2. Add Authorization Header Fallback
+- [x] Modify axios.js to include Authorization header with Bearer token
+- [x] Store token in localStorage/sessionStorage as backup
+- [x] Update auth middleware to handle both cookie and header authentication
 
-### 4. Fixed Login Authentication Issue
-- [x] Updated axios configuration with better API URL handling and debugging in `axios.js`
-- [x] Enhanced CORS configuration for production deployment in `server.js`
-- [x] Added detailed logging to auth middleware for debugging in `auth.js`
-- [x] Fixed 401 "No token provided" error by improving token handling
-- [x] Added comprehensive logging to server startup and route mounting
-- [x] Improved error handling in AuthContext to prevent page flickering
-- [x] Enhanced login flow to set user immediately from response
-- [x] Added detailed logging to auth routes and controllers
+### 3. Review Backend Cookie Options
+- [x] Check cookie settings in authController.js for production/development
+- [x] Ensure sameSite and secure options work with frontend domain
+- [x] Test cookie persistence across page reloads
+- [x] Enhanced cookie settings for better cross-domain compatibility
+- [x] Updated logout to use same cookie options for clearing
 
-### 5. Fixed User ID Property Inconsistency
-- [x] Updated all frontend files to handle both `user._id` and `user.id` properties
-- [x] Fixed `ProfileViewEnhanced.jsx` to use `user._id || user.id` for API calls
-- [x] Fixed `DevelopersEnhanced.jsx` to use `user._id || user.id` for filtering and chat links
-- [x] Verified other files already handle both properties correctly
-- [x] Ensured consistent user ID handling across the application
+### 4. Add Token Refresh Mechanism
+- [x] Implement token refresh endpoint in backend
+- [x] Add automatic token refresh in frontend on 401 errors
+- [x] Handle token expiration gracefully
+- [x] Added axios response interceptor to automatically refresh token on 401
+- [x] Clear invalid tokens and redirect to login on refresh failure
 
-### 6. Fixed Developers Page User Filtering
-- [x] Fixed `DevelopersEnhanced.jsx` to properly filter users by role
-- [x] Developers section now only shows users with `role === 'developer'`
-- [x] Admins section now only shows users with `role === 'admin'`
-- [x] Removed incorrect display of all users as developers
-- [x] Ensured proper separation between developers and admins
+### 5. Add Enhanced Logging
+- [ ] Add more detailed logging in auth middleware
+- [ ] Log token presence, expiration, and validation errors
+- [ ] Track request headers and cookies in failing requests
 
-## 📋 Implementation Details
-
-### Backend Changes:
-- **authController.js**: Added welcome notification logic, improved cookie settings, and detailed login logging
-- **server.js**: Enhanced CORS configuration, added localhost:3001 support, comprehensive startup logging, and route mounting logs
-- **middlewares/auth.js**: Added detailed logging for token verification debugging
-- **routes/auth.js**: Added logging for route setup confirmation
-
-### Frontend Changes:
-- **NotificationContext.jsx**: Added auto-dismiss timer for popup notifications
-- **ChatPage.jsx**: Fixed socket events and added duplicate message prevention
-- **axios.js**: Improved API URL handling with production fallback and detailed logging
-- **AuthContext.jsx**: Improved error handling for 401/404 responses to prevent unnecessary errors
-- **Login.jsx**: Enhanced login flow to set user immediately and provide better error messages
-
-## 🧪 Testing Status
-- Ready for testing: notifications auto-dismiss, chat messages don't duplicate, login authentication works
-- All fixes have been implemented and are ready for deployment
-
-## 🎯 Result
-All major issues have been resolved:
-- ✅ Popup notifications auto-dismiss after 10 seconds
-- ✅ Chat messages no longer appear double
-- ✅ Login authentication works properly with improved token handling
-- ✅ CORS and cookie settings optimized for production
-- ✅ Comprehensive logging added for debugging deployment issues
-- ✅ Improved error handling to prevent page flickering
-- ✅ Enhanced user experience with immediate login feedback
+### 6. Test Authentication Flow
+- [ ] Test complete login -> /auth/me -> notifications flow
+- [ ] Verify token persistence across browser sessions
+- [ ] Test in both development and production environments
