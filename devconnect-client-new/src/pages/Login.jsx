@@ -23,6 +23,7 @@ const Login = () => {
       console.log('🚀 Attempting login with:', { email: form.email, password: '[HIDDEN]' });
       const res = await API.post('/auth/login', form, { withCredentials: true });
       console.log('✅ Login response:', res.data);
+      console.log('🔑 Token in response:', res.data.token ? 'Present' : 'Missing');
 
       if (res.data.user) {
         // Set user immediately from login response
@@ -32,7 +33,13 @@ const Login = () => {
         // Store token in localStorage as backup
         if (res.data.token) {
           localStorage.setItem('token', res.data.token);
-          console.log('🔑 Token stored in localStorage');
+          console.log('🔑 Token stored in localStorage:', res.data.token.substring(0, 20) + '...');
+
+          // Also store in sessionStorage as additional backup
+          sessionStorage.setItem('token', res.data.token);
+          console.log('🔑 Token also stored in sessionStorage');
+        } else {
+          console.error('❌ No token received in login response');
         }
 
         navigate('/developers');

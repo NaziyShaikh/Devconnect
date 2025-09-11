@@ -17,48 +17,54 @@ const Register = () => {
     }
   }, [user, navigate]);
 
-  const handleSubmit = async e => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-    try {
-      const res = await API.post('/auth/register', form, { withCredentials: true });
-      console.log('Registration response:', res.data);
+const handleSubmit = async e => {
+  e.preventDefault();
+  setError('');
+  setSuccess('');
+  try {
+    const res = await API.post('/auth/register', form, { withCredentials: true });
+    console.log('Registration response:', res.data);
 
-      if (res.data.user) {
-        setSuccess('Registration successful! You are now logged in.');
+    if (res.data.user) {
+      setSuccess('Registration successful! You are now logged in.');
 
-        // Store token in localStorage as backup
-        if (res.data.token) {
-          localStorage.setItem('token', res.data.token);
-          console.log('🔑 Token stored in localStorage');
-        }
+      // Store token in localStorage as backup
+      if (res.data.token) {
+        localStorage.setItem('token', res.data.token);
+        console.log('🔑 Token stored in localStorage:', res.data.token.substring(0, 20) + '...');
 
-        // After successful registration, try to fetch current user
-        // Since registration sets a cookie, this should work
-        try {
-          await fetchCurrentUser();
-          // Add a small delay to show the success message
-          setTimeout(() => {
-            navigate('/developers');
-          }, 2000);
-        } catch (fetchErr) {
-          console.error('Error fetching user after registration:', fetchErr);
-          // Even if fetchCurrentUser fails, the registration was successful
-          // The AuthContext will handle the error and set user to null
-          // But we should still navigate since the cookie is set
-          setTimeout(() => {
-            navigate('/developers');
-          }, 2000);
-        }
+        // Also store in sessionStorage as additional backup
+        sessionStorage.setItem('token', res.data.token);
+        console.log('🔑 Token also stored in sessionStorage');
       } else {
-        setError('Registration failed: No user data');
+        console.error('❌ No token received in registration response');
       }
-    } catch (err) {
-      console.error('Registration error:', err);
-      setError(err.response?.data?.msg || 'Registration failed');
+
+      // After successful registration, try to fetch current user
+      // Since registration sets a cookie, this should work
+      try {
+        await fetchCurrentUser();
+        // Add a small delay to show the success message
+        setTimeout(() => {
+          navigate('/developers');
+        }, 2000);
+      } catch (fetchErr) {
+        console.error('Error fetching user after registration:', fetchErr);
+        // Even if fetchCurrentUser fails, the registration was successful
+        // The AuthContext will handle the error and set user to null
+        // But we should still navigate since the cookie is set
+        setTimeout(() => {
+          navigate('/developers');
+        }, 2000);
+      }
+    } else {
+      setError('Registration failed: No user data');
     }
-  };
+  } catch (err) {
+    console.error('Registration error:', err);
+    setError(err.response?.data?.msg || 'Registration failed');
+  }
+};
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">

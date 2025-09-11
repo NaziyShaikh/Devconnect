@@ -60,8 +60,11 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       // Clear token from localStorage
       localStorage.removeItem('token');
+      // Clear token from sessionStorage
+      sessionStorage.removeItem('token');
       // Clear token cookie
       document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      console.log('🚪 User logged out, cleared all tokens');
     } catch (error) {
       console.error('Logout error:', error);
     }

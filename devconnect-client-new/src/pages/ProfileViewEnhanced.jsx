@@ -15,10 +15,18 @@ const ProfileViewEnhanced = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await API.get(`/users/${user._id || user.id}`);
+        console.log('🔍 Fetching profile for user ID:', user._id || user.id);
+        const res = await API.get(`/profiles/${user._id || user.id}`);
+        console.log('✅ Profile fetched successfully:', res.data);
         setProfile(res.data);
       } catch (err) {
-        console.error('Failed to fetch profile:', err);
+        console.error('❌ Failed to fetch profile:', err);
+        console.error('   Error status:', err.response?.status);
+        console.error('   Error data:', err.response?.data);
+        // If profile doesn't exist, set profile to null to show "Profile not found"
+        if (err.response?.status === 404) {
+          setProfile(null);
+        }
       } finally {
         setLoading(false);
       }

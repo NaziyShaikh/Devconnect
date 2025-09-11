@@ -26,11 +26,18 @@ const API = axios.create({
 // Add request interceptor to log outgoing requests and add Authorization header
 API.interceptors.request.use(
   (config) => {
-    // Get token from localStorage as backup
-    const token = localStorage.getItem('token');
+    // Get token from localStorage or sessionStorage as backup
+    let token = localStorage.getItem('token');
+    if (!token) {
+      token = sessionStorage.getItem('token');
+      if (token) {
+        console.log('🔑 Found token in sessionStorage');
+      }
+    }
+
     if (token && !config.headers.Authorization) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log('🔑 Added Authorization header from localStorage');
+      console.log('🔑 Added Authorization header from storage');
     }
 
     console.log('🚀 API Request:', {
@@ -39,7 +46,8 @@ API.interceptors.request.use(
       baseURL: config.baseURL,
       withCredentials: config.withCredentials,
       hasAuthHeader: !!config.headers.Authorization,
-      hasTokenCookie: !!document.cookie.includes('token')
+      hasTokenCookie: !!document.cookie.includes('token'),
+      tokenSource: token ? (localStorage.getItem('token') ? 'localStorage' : 'sessionStorage') : 'none'
     });
     return config;
   },
