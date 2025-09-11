@@ -11,6 +11,8 @@ const ProfileView = () => {
   const { user } = useAuth();
   const { userId } = useParams();
 
+  const isOwnProfile = !userId || userId === (user?._id || user?.id);
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -21,6 +23,7 @@ const ProfileView = () => {
         console.log('   userId from URL:', userId);
         console.log('   user from context:', user);
         console.log('   user._id:', user?._id);
+        console.log('   isOwnProfile:', isOwnProfile);
 
         // If userId is provided in URL, fetch that user's profile
         // Otherwise, fetch the logged-in user's profile
@@ -54,7 +57,14 @@ const ProfileView = () => {
         if (err.response?.status === 401) {
           setError('Authentication required. Please log in to view profiles.');
         } else if (err.response?.status === 404) {
-          setError('Profile not found.');
+          // If it's the user's own profile and it doesn't exist, redirect to setup
+          if (isOwnProfile) {
+            console.log('👤 User profile not found, redirecting to profile setup');
+            navigate('/profile-setup');
+            return;
+          } else {
+            setError('Profile not found.');
+          }
         } else {
           setError('Failed to load profile. Please try again.');
         }
@@ -64,13 +74,11 @@ const ProfileView = () => {
     };
 
     fetchProfile();
-  }, [user, userId]);
+  }, [user, userId, isOwnProfile]);
 
   const handleEditProfile = () => {
     navigate('/profile-setup');
   };
-
-  const isOwnProfile = !userId || userId === (user?._id || user?.id);
 
   if (loading) {
   return (

@@ -20,20 +20,21 @@ const ProfileSetup = () => {
     e.preventDefault();
     setError('');
     try {
-      // Update profile information
+      // Create or update profile information
       const profileData = {
         bio: form.bio,
         skills: form.skills.split(',').map(s => s.trim()).filter(s => s),
-        experience: form.experience,
         github: form.github,
-        portfolio: form.portfolio,
-        resume: form.resume
+        portfolio: form.portfolio
       };
-      
-      await API.put('/users/update', profileData);
-      navigate('/developers');
+
+      console.log('📝 Creating/updating profile:', profileData);
+      await API.post('/profiles', profileData);
+      console.log('✅ Profile created/updated successfully');
+      navigate('/profile');
     } catch (err) {
-      setError(err.response?.data?.msg || 'Failed to update profile');
+      console.error('❌ Failed to create/update profile:', err);
+      setError(err.response?.data?.msg || 'Failed to save profile');
     }
   };
 

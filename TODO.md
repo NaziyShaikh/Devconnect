@@ -75,3 +75,22 @@ To verify the fix:
 3. Navigate to protected routes (/developers, /profile, etc.)
 4. Verify no 401 errors in network tab
 5. Test token persistence across page reloads
+
+## ✅ **Profile Not Found Issue - FIXED**
+
+### **Problem:**
+- Users were seeing "Profile not found" error after successful login
+- Profile documents don't exist automatically after user registration
+- Frontend was showing error instead of guiding users to create profiles
+
+### **Solution Implemented:**
+- **ProfileSetup.jsx**: Fixed API endpoint from `/users/update` to `/profiles` (POST)
+- **ProfileView.jsx**: Added automatic redirect to `/profile-setup` when user's own profile is missing (404)
+- **User Experience**: Seamless flow from login → profile view → profile setup → profile view
+
+### **Result:**
+✅ **Profile creation and viewing now works seamlessly**
+- New users are automatically redirected to create their profile
+- Existing users can view their profiles normally
+- No more "Profile not found" errors for legitimate users
+- Proper error handling for non-existent profiles of other users
