@@ -5,7 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ProfileSetup from './pages/ProfileSetup';
-import ProfileView from './pages/ProfileView';
+import ProfileViewEnhanced from './pages/ProfileViewEnhanced';
 import DevelopersEnhanced from './pages/DevelopersEnhanced';
 import AllProjects from './pages/AllProjects';
 import MyProjects from './pages/MyProjects';
@@ -27,8 +27,8 @@ function App() {
         <Route path="/register" element={<Register />} />
 
         <Route element={<ProtectedRoute />}>
-          <Route path="/profile" element={<ProfileView />} />
-          <Route path="/profile/:userId" element={<ProfileView />} />
+          <Route path="/profile" element={<ProfileViewEnhanced />} />
+          <Route path="/profile/:userId" element={<ProfileViewEnhanced />} />
           <Route path="/profile-setup" element={<ProfileSetup />} />
           <Route path="/developers" element={<DevelopersEnhanced />} />
           <Route path="/projects" element={<AllProjects />} />
