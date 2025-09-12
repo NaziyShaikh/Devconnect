@@ -62,10 +62,10 @@ const ProfileView = () => {
         if (err.response?.status === 401) {
           setError('Authentication required. Please log in to view profiles.');
         } else if (err.response?.status === 404) {
-          // If it's the user's own profile and it doesn't exist, redirect to setup
+          // If it's the user's own profile and it doesn't exist, show profile not found instead of redirecting
           if (isOwnProfile) {
-            console.log('👤 User profile not found, redirecting to profile setup');
-            navigate('/profile-setup');
+            console.log('👤 User profile not found, showing profile not found message');
+            setProfile(null);
             return;
           } else {
             // For other users' profiles, show a user-friendly message
