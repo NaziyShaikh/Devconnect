@@ -31,8 +31,24 @@ export const AuthProvider = ({ children }) => {
       // Handle different types of auth errors
       if (error.response?.status === 401) {
         console.log('   401 Unauthorized - Token invalid or expired');
-        // Try to clear any invalid cookies
+        // Try to clear any invalid cookies and localStorage
         document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        localStorage.removeItem('token');
+        // Try to refresh token if refresh endpoint exists
+        try {
+          console.log('🔄 Attempting token refresh...');
+          const refreshRes = await API.post('/auth/refresh-token', {}, { withCredentials: true });
+          if (refreshRes.data.token) {
+            localStorage.setItem('token', refreshRes.data.token);
+            console.log('✅ Token refreshed, retrying user fetch...');
+            // Retry fetching user
+            const retryRes = await API.get('/auth/me', { withCredentials: true });
+            setUser(retryRes.data);
+            return retryRes.data;
+          }
+        } catch (refreshError) {
+          console.log('❌ Token refresh failed:', refreshError.message);
+        }
       } else if (error.response?.status === 403) {
         console.log('   403 Forbidden - Access denied');
       } else if (error.response?.status >= 500) {
