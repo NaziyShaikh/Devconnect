@@ -9,11 +9,9 @@ const createMissingProfiles = async () => {
   try {
     console.log('🔍 Checking for users without profiles...');
 
-    // Connect to MongoDB if not already connected
-    if (mongoose.connection.readyState !== 1) {
-      await mongoose.connect(process.env.MONGO_URI);
-      console.log('✅ Connected to MongoDB');
-    }
+    // Connect to MongoDB
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log('✅ Connected to MongoDB');
 
     // Find all users
     const users = await User.find({});
@@ -58,14 +56,19 @@ const createMissingProfiles = async () => {
       console.log(`   - Profile for ${user.name} (${user.email}): ${profile._id}`);
     });
 
+    console.log('🎉 Profile creation completed successfully');
+
   } catch (error) {
     console.error('❌ Error creating missing profiles:', error);
+  } finally {
+    await mongoose.disconnect();
+    console.log('🔌 Disconnected from MongoDB');
   }
 };
 
 // Run the script
 createMissingProfiles().then(() => {
-  console.log('🎉 Profile creation check completed');
+  console.log('🎉 Script completed');
   process.exit(0);
 }).catch((error) => {
   console.error('❌ Script failed:', error);
