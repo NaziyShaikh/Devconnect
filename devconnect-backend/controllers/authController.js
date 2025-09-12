@@ -194,13 +194,58 @@ export const logout = (req, res) => {
 export const refreshToken = async (req, res) => {
   try {
     console.log('🔄 Token refresh requested');
-    console.log('   Current user:', req.user);
+    console.log('   Request headers:', req.headers);
+    console.log('   Request cookies:', req.cookies);
 
-    if (!req.user || !req.user.id) {
-      return res.status(401).json({ msg: 'No valid session found' });
+    // Get token from Authorization header or cookie
+    let token = null;
+    let tokenSource = '';
+
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+      token = req.headers.authorization.substring(7);
+      tokenSource = 'Authorization header';
+    } else if (req.cookies?.token) {
+      token = req.cookies.token;
+      tokenSource = 'Cookie';
     }
 
-    const user = await User.findById(req.user.id);
+    if (!token) {
+      console.log('❌ No token found for refresh');
+      return res.status(401).json({ msg: 'No token provided for refresh' });
+    }
+
+    console.log(`✅ Token found from: ${tokenSource}`);
+
+    // Verify the token (allow expired tokens within 7 days for refresh)
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      if (err.name === 'TokenExpiredError') {
+        // Allow refresh if token expired within 7 days
+        const now = Math.floor(Date.now() / 1000);
+        const expiredAt = err.expiredAt.getTime() / 1000;
+        const daysSinceExpiry = (now - expiredAt) / (24 * 60 * 60);
+
+        if (daysSinceExpiry > 7) {
+          console.log('❌ Token expired too long ago:', daysSinceExpiry, 'days');
+          return res.status(401).json({ msg: 'Token expired too long ago' });
+        }
+
+        // Decode expired token without verification
+        decoded = jwt.decode(token);
+        console.log('✅ Allowing refresh for recently expired token');
+      } else {
+        console.log('❌ Invalid token:', err.message);
+        return res.status(401).json({ msg: 'Invalid token' });
+      }
+    }
+
+    if (!decoded || !decoded.id) {
+      return res.status(401).json({ msg: 'Invalid token payload' });
+    }
+
+    const user = await User.findById(decoded.id);
     if (!user) {
       return res.status(404).json({ msg: 'User not found' });
     }

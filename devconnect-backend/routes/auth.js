@@ -17,7 +17,7 @@ router.post('/forgot-password', forgotPassword);
 console.log('   ✅ POST /forgot-password route set up');
 router.post('/reset-password', resetPassword);
 console.log('   ✅ POST /reset-password route set up');
-router.post('/refresh-token', verifyToken, refreshToken);
+router.post('/refresh-token', refreshToken);
 console.log('   ✅ POST /refresh-token route set up');
 
 export default router;
