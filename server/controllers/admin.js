@@ -62,14 +62,24 @@ exports.blockUser = async (req, res) => {
       });
     }
 
+    // Prevent admin from blocking themselves
+    if (user._id.toString() === req.user._id.toString()) {
+      return res.status(400).json({
+        success: false,
+        message: 'You cannot block your own account'
+      });
+    }
+
     user.isBlocked = !user.isBlocked;
     await user.save();
 
     res.json({
       success: true,
-      data: user
+      data: user,
+      message: `User ${user.isBlocked ? 'blocked' : 'unblocked'} successfully`
     });
   } catch (error) {
+    console.error('Error blocking user:', error);
     res.status(500).json({
       success: false,
       message: error.message

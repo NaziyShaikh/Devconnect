@@ -325,7 +325,7 @@ const Developers = () => {
               <div className="space-y-3">
                 <div className="flex space-x-3">
                   <button
-                    onClick={() => window.open(`/user-profile/${developer._id}`, '_blank')}
+                    onClick={() => window.location.href = `/user-profile/${developer._id}`}
                     className="flex-1 group/btn bg-gradient-to-r from-green-500 to-emerald-600 text-white text-center py-3 px-4 rounded-xl text-sm font-semibold hover:from-green-400 hover:to-emerald-500 transition-all duration-300 shadow-lg hover:shadow-green-500/25 transform hover:scale-105"
                     aria-label={`View profile of ${developer.name}`}
                     title={`View profile of ${developer.name}`}

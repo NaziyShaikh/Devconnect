@@ -26,7 +26,9 @@ exports.getUsers = async (req, res) => {
 // @route   GET /api/users/:id
 exports.getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select('-password');
+    const user = await User.findById(req.params.id)
+      .select('-password')
+      .populate('profile');
 
     if (!user) {
       return res.status(404).json({
@@ -40,6 +42,7 @@ exports.getUser = async (req, res) => {
       data: user
     });
   } catch (error) {
+    console.error('Error fetching user:', error);
     res.status(500).json({
       success: false,
       message: error.message

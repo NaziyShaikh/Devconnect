@@ -71,7 +71,7 @@ const Navbar = () => {
                   </button>
                   {isOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 border border-gray-200">
-                      <Link to={`/user-profile/${user.id}`} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors">
+                      <Link to={`/user-profile/${user?._id}`} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors">
                         View Profile
                       </Link>
                       <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors">
@@ -140,7 +140,7 @@ const Navbar = () => {
                       Admin
                     </Link>
                   )}
-                  <Link to={`/user-profile/${user.id}`} className="block text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium">
+                  <Link to={`/user-profile/${user?._id}`} className="block text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium">
                     View Profile
                   </Link>
                   <Link to="/dashboard" className="block text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium">
