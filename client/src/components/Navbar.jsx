@@ -74,7 +74,7 @@ const Navbar = () => {
                       <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors">
                         Profile
                       </Link>
-                      <Link to="/chat" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors">
+                      <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors">
                         Chat
                       </Link>
                       <button
@@ -143,7 +143,7 @@ const Navbar = () => {
                   <Link to="/profile" className="block text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium">
                     Profile
                   </Link>
-                  <Link to="/chat" className="block text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium">
+                  <Link to="/dashboard" className="block text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium">
                     Chat
                   </Link>
                   <button

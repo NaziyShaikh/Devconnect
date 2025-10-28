@@ -43,14 +43,25 @@ const Projects = () => {
 
   const handleJoinRequest = async (projectId) => {
     try {
-      await axios.post(`/api/projects/${projectId}/join`, {
+      const response = await axios.post(`/api/projects/${projectId}/join`, {
         role: 'Developer', // Default role, could be made selectable
         message: 'I would like to join this project.'
       });
-      // Refresh projects to show updated join requests
-      fetchProjects();
+
+      if (response.data.success) {
+        alert('Join request sent successfully! The project owner will review your request.');
+        // Refresh projects to show updated join requests
+        fetchProjects();
+      } else {
+        alert(response.data.message || 'Failed to send join request');
+      }
     } catch (error) {
       console.error('Error sending join request:', error);
+      if (error.response && error.response.data && error.response.data.message) {
+        alert(`Error: ${error.response.data.message}`);
+      } else {
+        alert('Failed to send join request. Please try again.');
+      }
     }
   };
 

@@ -207,8 +207,27 @@ exports.requestToJoin = async (req, res) => {
     await project.save();
     await project.populate('joinRequests.user', 'name profile');
 
+    // Create notification for the project owner
+    try {
+      const notification = await Notification.create({
+        recipient: project.owner,
+        type: 'project_join_request',
+        title: 'New Join Request',
+        message: `${req.user.name} wants to join your project "${project.title}"`,
+        relatedId: project._id,
+        relatedModel: 'Project'
+      });
+
+      // Emit real-time notification
+      global.io.to(`user_${project.owner}`).emit('new-notification', notification);
+    } catch (notificationError) {
+      console.error('Error creating join request notification:', notificationError);
+      // Don't fail the join request if notification creation fails
+    }
+
     res.json({
       success: true,
+      message: 'Join request sent successfully',
       data: project
     });
   } catch (error) {

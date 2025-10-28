@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:5000');
+const socket = io(process.env.REACT_APP_API_URL || 'http://localhost:5000');
 
 const Chat = ({ recipientId, recipientName }) => {
   const { user } = useAuth();
