@@ -37,7 +37,7 @@ function App() {
             } />
             <Route path="/profile" element={
               <ProtectedRoute>
-                <Profile />
+                <UserProfile />
               </ProtectedRoute>
             } />
             <Route path="/projects" element={

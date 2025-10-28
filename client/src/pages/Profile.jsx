@@ -76,8 +76,12 @@ const Profile = () => {
       });
 
       // Update profile with resume URL
-      await updateProfile({ resume: res.data.data.url });
-      setMessage('Resume uploaded successfully!');
+      const result = await updateProfile({ resume: res.data.data.url });
+      if (result.success) {
+        setMessage('✅ Resume uploaded successfully!');
+      } else {
+        setMessage('❌ Failed to update profile with resume');
+      }
     } catch (error) {
       setMessage('Failed to upload resume');
     }
@@ -91,6 +95,7 @@ const Profile = () => {
     formDataUpload.append('file', file);
 
     try {
+      setMessage('Uploading profile picture...');
       const res = await axios.post('/api/upload', formDataUpload, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -98,8 +103,14 @@ const Profile = () => {
       });
 
       // Update profile with avatar URL
-      await updateProfile({ avatar: res.data.data.url });
-      setMessage('Profile picture uploaded successfully!');
+      const result = await updateProfile({ avatar: res.data.data.url });
+      if (result.success) {
+        setMessage('Profile picture uploaded successfully!');
+        // Refresh user data to show new avatar
+        window.location.reload();
+      } else {
+        setMessage('Failed to update profile with new picture');
+      }
     } catch (error) {
       setMessage('Failed to upload profile picture');
     }
@@ -113,9 +124,11 @@ const Profile = () => {
     const result = await updateProfile(formData);
 
     if (result.success) {
-      setMessage('Profile updated successfully!');
+      setMessage('✅ Profile updated successfully! Your changes have been saved.');
+      // Auto-hide success message after 5 seconds
+      setTimeout(() => setMessage(''), 5000);
     } else {
-      setMessage(result.message);
+      setMessage(`❌ ${result.message || 'Failed to update profile'}`);
     }
 
     setLoading(false);
@@ -130,8 +143,33 @@ const Profile = () => {
           <div className="px-4 py-5 sm:p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
               {message && (
-                <div className={`p-4 rounded ${message.includes('success') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                  {message}
+                <div className={`p-4 rounded-lg border-l-4 animate-fade-in-up ${
+                  message.includes('✅') || message.includes('success')
+                    ? 'bg-green-50 border-green-400 text-green-800'
+                    : message.includes('❌')
+                    ? 'bg-red-50 border-red-400 text-red-800'
+                    : 'bg-blue-50 border-blue-400 text-blue-800'
+                }`}>
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      {message.includes('✅') || message.includes('success') ? (
+                        <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      ) : message.includes('❌') ? (
+                        <svg className="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                        </svg>
+                      ) : (
+                        <svg className="w-5 h-5 text-blue-400 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                      )}
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm font-medium">{message}</p>
+                    </div>
+                  </div>
                 </div>
               )}
 
