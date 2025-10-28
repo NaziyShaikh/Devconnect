@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 
@@ -198,7 +198,7 @@ const UserProfile = () => {
           </div>
 
           {/* Profile Details */}
-          {user.profile && (
+          {user.profile ? (
             <div className="space-y-8">
               {/* Bio Section */}
               <div className="bg-gray-50 rounded-xl p-6">
@@ -386,6 +386,24 @@ const UserProfile = () => {
                       <p className="text-gray-500 italic">No links added yet.</p>
                     )}
                   </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-16">
+              <div className="bg-gray-50 rounded-xl p-8 max-w-md mx-auto">
+                <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Profile Not Complete</h3>
+                <p className="text-gray-600 mb-6">This user hasn't set up their profile information yet.</p>
+                {isOwnProfile && (
+                  <button
+                    onClick={handleEditToggle}
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg font-semibold"
+                  >
+                    Set Up Your Profile
+                  </button>
                 )}
               </div>
             </div>
