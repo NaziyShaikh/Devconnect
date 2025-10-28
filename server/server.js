@@ -9,8 +9,14 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
-    methods: ["GET", "POST"]
+    origin: [
+      process.env.CLIENT_URL || "http://localhost:3000",
+      "https://devconnect-frontend-tsk0.onrender.com",
+      "https://devconnect-frontend-tsk0.onrender.com/",
+      "*"
+    ],
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
 
@@ -18,7 +24,14 @@ const io = socketIo(server, {
 global.io = io;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    process.env.CLIENT_URL || "http://localhost:3000",
+    "https://devconnect-frontend-tsk0.onrender.com",
+    "https://devconnect-frontend-tsk0.onrender.com/"
+  ],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

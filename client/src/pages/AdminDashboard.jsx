@@ -298,7 +298,7 @@ const AdminDashboard = () => {
                       <div className="flex-shrink-0 h-16 w-16">
                         <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
                           <span className="text-white font-bold text-xl">
-                            {user.name.charAt(0).toUpperCase()}
+                            {user.name?.charAt(0).toUpperCase() || '?'}
                           </span>
                         </div>
                       </div>
