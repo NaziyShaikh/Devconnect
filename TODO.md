@@ -1,11 +1,5 @@
-# Developers Page Enhancement
+# TODO for Adding Welcome Message to Backend Root Route
 
-## Tasks
-- [ ] Enhance overall page design with gradient background and better typography
-- [ ] Improve filter section with better styling, icons, and layout
-- [ ] Upgrade developer cards with hover effects, gradients, and professional styling
-- [ ] Add subtle animations and transitions
-- [ ] Ensure responsive design
-
-## Status
-In Progress
+- [x] Edit devconnect/server/server.js to add a GET route for '/' that returns a JSON welcome message before the existing routes.
+- [x] Start the backend server.
+- [ ] Test the root route (e.g., visit http://localhost:5000/) to confirm the welcome message displays.
