@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.get('/', protect, getUsers);
 router.get('/search', protect, searchUsers);
-router.get('/:id', protect, getUser);
+router.get('/:id', getUser);
 router.put('/profile', protect, updateProfile);
 
 module.exports = router;

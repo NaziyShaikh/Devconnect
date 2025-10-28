@@ -61,9 +61,7 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path="/user-profile/:id" element={
-              <ProtectedRoute>
-                <UserProfile />
-              </ProtectedRoute>
+              <UserProfile />
             } />
             <Route path="/admin" element={
               <ProtectedRoute adminOnly>
