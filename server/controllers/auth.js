@@ -24,9 +24,13 @@ exports.register = async (req, res) => {
       });
     }
 
+    // Generate username from email (before @)
+    const username = email.split('@')[0];
+
     // Create user
     const user = await User.create({
       name,
+      username,
       email,
       password,
       role

@@ -6,6 +6,7 @@ exports.getUsers = async (req, res) => {
   try {
     const users = await User.find({ isBlocked: false })
       .select('-password')
+      .populate('profile')
       .sort({ createdAt: -1 });
 
     res.json({
