@@ -324,11 +324,9 @@ const Developers = () => {
 
               <div className="space-y-3">
                 <div className="flex space-x-3">
-                  <button
-                    onClick={() => {
-                      console.log('Navigating to user profile:', developer._id);
-                      window.location.href = `/user-profile/${developer._id}`;
-                    }}
+                  <Link
+                    to={`/user-profile/${developer._id}`}
+                    onClick={() => console.log('Navigating to user profile:', developer._id)}
                     className="flex-1 group/btn bg-gradient-to-r from-green-500 to-emerald-600 text-white text-center py-3 px-4 rounded-xl text-sm font-semibold hover:from-green-400 hover:to-emerald-500 transition-all duration-300 shadow-lg hover:shadow-green-500/25 transform hover:scale-105"
                     aria-label={`View profile of ${developer.name}`}
                     title={`View profile of ${developer.name}`}
@@ -339,9 +337,9 @@ const Developers = () => {
                       </svg>
                       View Profile
                     </span>
-                  </button>
-                  <button
-                    onClick={() => window.location.href = `/chat/${developer._id}`}
+                  </Link>
+                  <Link
+                    to={`/chat/${developer._id}`}
                     className="flex-1 group/btn bg-gradient-to-r from-blue-500 to-cyan-600 text-white text-center py-3 px-4 rounded-xl text-sm font-semibold hover:from-blue-400 hover:to-cyan-500 transition-all duration-300 shadow-lg hover:shadow-blue-500/25 transform hover:scale-105"
                     aria-label={`Chat with ${developer.name}`}
                     title={`Chat with ${developer.name}`}
@@ -352,7 +350,7 @@ const Developers = () => {
                       </svg>
                       Chat
                     </span>
-                  </button>
+                  </Link>
                 </div>
                 <div className="flex space-x-3">
                   {developer.role === 'admin' && (
