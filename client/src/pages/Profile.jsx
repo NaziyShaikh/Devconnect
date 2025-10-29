@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 
 const Profile = () => {
-  const { user, updateProfile } = useAuth();
+  const { user, updateProfile, setUser } = useAuth();
   const [formData, setFormData] = useState({
     bio: '',
     skills: [],
