@@ -29,12 +29,19 @@ const upload = multer({ storage: storage });
 // @route   POST /api/upload
 router.post('/', protect, upload.single('file'), (req, res) => {
   try {
+    console.log('Upload request received');
+    console.log('File:', req.file);
+    console.log('User:', req.user?.id);
+
     if (!req.file) {
+      console.log('No file uploaded');
       return res.status(400).json({
         success: false,
         message: 'No file uploaded'
       });
     }
+
+    console.log('File uploaded successfully:', req.file.path);
 
     res.json({
       success: true,
@@ -45,6 +52,7 @@ router.post('/', protect, upload.single('file'), (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Upload error:', error);
     res.status(500).json({
       success: false,
       message: error.message

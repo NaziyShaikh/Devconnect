@@ -96,25 +96,36 @@ const Profile = () => {
 
     try {
       setMessage('Uploading profile picture...');
+      console.log('Starting avatar upload...');
+
       const res = await axios.post('/api/upload', formDataUpload, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
 
-      // Update profile with avatar URL
       console.log('Avatar upload response:', res.data);
-      const result = await updateProfile({ avatar: res.data.data.url });
-      console.log('Profile update result:', result);
-      if (result.success) {
-        setMessage('✅ Profile picture uploaded successfully!');
-        // Refresh user data to show new avatar
-        window.location.reload();
+
+      if (res.data.success) {
+        // Update profile with avatar URL
+        const result = await updateProfile({ avatar: res.data.data.url });
+        console.log('Profile update result:', result);
+
+        if (result.success) {
+          setMessage('✅ Profile picture uploaded successfully!');
+          // Refresh user data to show new avatar
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } else {
+          setMessage('❌ Failed to update profile with new picture');
+        }
       } else {
-        setMessage('❌ Failed to update profile with new picture');
+        setMessage('❌ File upload failed');
       }
     } catch (error) {
-      setMessage('Failed to upload profile picture');
+      console.error('Avatar upload error:', error);
+      setMessage('❌ Failed to upload profile picture');
     }
   };
 

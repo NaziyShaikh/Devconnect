@@ -64,7 +64,9 @@ exports.createProject = async (req, res) => {
 
     // Create notifications for all users except the project owner
     try {
-      const users = await User.find({ _id: { $ne: req.user.id } }).select('_id');
+      const users = await User.find({ _id: { $ne: req.user.id }, isBlocked: false }).select('_id');
+      console.log(`Creating notifications for ${users.length} users about new project: ${project.title}`);
+
       const notificationPromises = users.map(user =>
         Notification.create({
           recipient: user._id,
@@ -75,13 +77,13 @@ exports.createProject = async (req, res) => {
           relatedModel: 'Project'
         })
       );
-      await Promise.all(notificationPromises);
+      const notifications = await Promise.all(notificationPromises);
+      console.log(`Created ${notifications.length} project notifications`);
 
       // Emit real-time notifications
-      notificationPromises.forEach((promise, index) => {
-        promise.then(notification => {
-          global.io.to(`user_${users[index]._id}`).emit('new-notification', notification);
-        });
+      notifications.forEach(notification => {
+        console.log(`Emitting project notification to user: ${notification.recipient}`);
+        global.io.to(`user_${notification.recipient}`).emit('new-notification', notification);
       });
     } catch (notificationError) {
       console.error('Error creating project notifications:', notificationError);
@@ -209,6 +211,7 @@ exports.requestToJoin = async (req, res) => {
 
     // Create notification for the project owner
     try {
+      console.log(`Creating join request notification for project owner: ${project.owner}`);
       const notification = await Notification.create({
         recipient: project.owner,
         type: 'project_join_request',
@@ -217,8 +220,10 @@ exports.requestToJoin = async (req, res) => {
         relatedId: project._id,
         relatedModel: 'Project'
       });
+      console.log('Join request notification created:', notification._id);
 
       // Emit real-time notification
+      console.log(`Emitting join request notification to user: ${project.owner}`);
       global.io.to(`user_${project.owner}`).emit('new-notification', notification);
     } catch (notificationError) {
       console.error('Error creating join request notification:', notificationError);
@@ -299,6 +304,7 @@ exports.respondToJoinRequest = async (req, res) => {
 
     // Create notification for the user who made the join request
     try {
+      console.log(`Creating join request response notification for user: ${joinRequest.user}`);
       const notificationType = req.body.status === 'accepted' ? 'project_join_approved' : 'project_join_rejected';
       const notificationTitle = req.body.status === 'accepted' ? 'Join Request Approved' : 'Join Request Rejected';
       const notificationMessage = req.body.status === 'accepted'
@@ -313,8 +319,10 @@ exports.respondToJoinRequest = async (req, res) => {
         relatedId: project._id,
         relatedModel: 'Project'
       });
+      console.log('Join request response notification created:', notification._id);
 
       // Emit real-time notification
+      console.log(`Emitting join request response notification to user: ${joinRequest.user}`);
       global.io.to(`user_${joinRequest.user}`).emit('new-notification', notification);
     } catch (notificationError) {
       console.error('Error creating join request response notification:', notificationError);

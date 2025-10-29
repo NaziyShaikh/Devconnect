@@ -54,11 +54,15 @@ const Chat = ({ recipientId, recipientName }) => {
     if (!newMessage.trim()) return;
 
     try {
+      console.log('Sending message to room:', roomId);
+
       // Save to database
       const res = await axios.post('/api/messages', {
         roomId,
         message: newMessage
       });
+
+      console.log('Message sent successfully:', res.data);
 
       // Add message to local state immediately for the sender
       setMessages(prev => [...prev, res.data.data]);

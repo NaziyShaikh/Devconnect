@@ -30,6 +30,8 @@ const sendMessage = async (req, res) => {
     const { roomId, message, messageType = 'text', fileUrl } = req.body;
     const sender = req.user.id;
 
+    console.log('Sending message:', { roomId, sender, message });
+
     const newMessage = new Message({
       roomId,
       sender,
@@ -54,25 +56,37 @@ const sendMessage = async (req, res) => {
       if (roomId.includes('-')) {
         const roomParticipants = roomId.split('-');
         recipients = roomParticipants.filter(id => id !== sender.toString());
+        console.log('Direct message recipients:', recipients);
       } else {
         // For group chats or other room types, find all users who have sent messages in this room
         const participants = await Message.distinct('sender', { roomId });
         recipients = participants.filter(participantId => participantId.toString() !== sender.toString());
+        console.log('Group message recipients:', recipients);
       }
 
-      // Create notifications for each recipient
-      const notificationPromises = recipients.map(recipientId =>
-        Notification.create({
-          recipient: recipientId,
-          type: 'general',
-          title: 'New Message',
-          message: `${senderUser.name} sent a message in your chat`,
-          relatedId: roomId,
-          relatedModel: 'Message'
-        })
-      );
+      if (recipients.length > 0) {
+        // Create notifications for each recipient
+        const notificationPromises = recipients.map(recipientId => {
+          console.log('Creating notification for recipient:', recipientId);
+          return Notification.create({
+            recipient: recipientId,
+            type: 'message',
+            title: 'New Message',
+            message: `${senderUser.name} sent you a message`,
+            relatedId: roomId,
+            relatedModel: 'Message'
+          });
+        });
 
-      await Promise.all(notificationPromises);
+        const notifications = await Promise.all(notificationPromises);
+        console.log('Created notifications:', notifications.length);
+
+        // Emit socket notifications
+        notifications.forEach(notification => {
+          console.log('Emitting notification to user:', notification.recipient);
+          global.io.to(`user_${notification.recipient}`).emit('new-notification', notification);
+        });
+      }
     } catch (notificationError) {
       console.error('Error creating notifications:', notificationError);
       // Don't fail the message send if notifications fail

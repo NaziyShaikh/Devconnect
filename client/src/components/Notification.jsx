@@ -33,6 +33,7 @@ const Notification = () => {
   useEffect(() => {
     if (socket) {
       const handleNewNotification = (notification) => {
+        console.log('Received new notification:', notification);
         setNotifications(prev => [notification, ...prev]);
         setUnreadCount(prev => prev + 1);
 
@@ -45,10 +46,11 @@ const Notification = () => {
         }
       };
 
-      socket.on('notification', handleNewNotification);
+      socket.on('new-notification', handleNewNotification);
+      console.log('Listening for notifications on socket');
 
       return () => {
-        socket.off('notification', handleNewNotification);
+        socket.off('new-notification', handleNewNotification);
       };
     }
   }, [socket]);
@@ -128,6 +130,8 @@ const Notification = () => {
         return '💬';
       case 'project_update':
         return '📋';
+      case 'project_join_request':
+        return '👥';
       case 'project_join_approved':
         return '✅';
       case 'project_join_rejected':
