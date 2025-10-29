@@ -59,20 +59,27 @@ exports.updateProfile = async (req, res) => {
       'profile.skills': req.body.skills,
       'profile.experience': req.body.experience,
       'profile.github': req.body.github,
-      'profile.portfolio': req.body.portfolio
+      'profile.portfolio': req.body.portfolio,
+      'profile.avatar': req.body.avatar,
+      'profile.phone': req.body.phone,
+      'profile.location': req.body.location,
+      'profile.website': req.body.website,
+      'profile.linkedin': req.body.linkedin,
+      'profile.twitter': req.body.twitter
     };
 
     const user = await User.findByIdAndUpdate(
       req.user.id,
       { $set: fieldsToUpdate },
       { new: true, runValidators: true }
-    ).select('-password');
+    ).select('-password').populate('profile');
 
     res.json({
       success: true,
       data: user
     });
   } catch (error) {
+    console.error('Error updating profile:', error);
     res.status(500).json({
       success: false,
       message: error.message
