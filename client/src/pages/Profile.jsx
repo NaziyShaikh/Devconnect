@@ -103,13 +103,15 @@ const Profile = () => {
       });
 
       // Update profile with avatar URL
+      console.log('Avatar upload response:', res.data);
       const result = await updateProfile({ avatar: res.data.data.url });
+      console.log('Profile update result:', result);
       if (result.success) {
-        setMessage('Profile picture uploaded successfully!');
+        setMessage('✅ Profile picture uploaded successfully!');
         // Refresh user data to show new avatar
         window.location.reload();
       } else {
-        setMessage('Failed to update profile with new picture');
+        setMessage('❌ Failed to update profile with new picture');
       }
     } catch (error) {
       setMessage('Failed to upload profile picture');

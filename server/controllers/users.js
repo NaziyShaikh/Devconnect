@@ -54,6 +54,16 @@ exports.getUser = async (req, res) => {
 // @route   PUT /api/users/profile
 exports.updateProfile = async (req, res) => {
   try {
+    console.log('Profile update request:', req.body);
+    console.log('User ID from token:', req.user?.id);
+
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not authenticated'
+      });
+    }
+
     const fieldsToUpdate = {
       'profile.bio': req.body.bio,
       'profile.skills': req.body.skills,
@@ -68,11 +78,22 @@ exports.updateProfile = async (req, res) => {
       'profile.twitter': req.body.twitter
     };
 
+    console.log('Fields to update:', fieldsToUpdate);
+
     const user = await User.findByIdAndUpdate(
       req.user.id,
       { $set: fieldsToUpdate },
       { new: true, runValidators: true }
     ).select('-password').populate('profile');
+
+    console.log('Updated user:', user);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
 
     res.json({
       success: true,
