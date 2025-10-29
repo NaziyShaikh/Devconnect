@@ -113,10 +113,18 @@ const Profile = () => {
 
         if (result.success) {
           setMessage('✅ Profile picture uploaded successfully!');
-          // Refresh user data to show new avatar
+          // Update local user state immediately to show new avatar
+          setUser(prevUser => ({
+            ...prevUser,
+            profile: {
+              ...prevUser.profile,
+              avatar: res.data.data.url
+            }
+          }));
+          // Clear message after 3 seconds
           setTimeout(() => {
-            window.location.reload();
-          }, 1000);
+            setMessage('');
+          }, 3000);
         } else {
           setMessage('❌ Failed to update profile with new picture');
         }
@@ -231,8 +239,14 @@ const Profile = () => {
                         src={user.profile.avatar}
                         alt="Profile"
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          console.error('Avatar image failed to load:', user.profile.avatar);
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'block';
+                        }}
                       />
-                    ) : (
+                    ) : null}
+                    {(!user?.profile?.avatar || user?.profile?.avatar?.includes('undefined')) && (
                       <span className="text-2xl text-gray-500">
                         {user?.name?.charAt(0)?.toUpperCase() || '?'}
                       </span>

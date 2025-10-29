@@ -55,6 +55,11 @@ function App() {
                 <CreateProject />
               </ProtectedRoute>
             } />
+            <Route path="/chat" element={
+              <ProtectedRoute>
+                <ChatWrapper />
+              </ProtectedRoute>
+            } />
             <Route path="/chat/:recipientId" element={
               <ProtectedRoute>
                 <ChatWrapper />
