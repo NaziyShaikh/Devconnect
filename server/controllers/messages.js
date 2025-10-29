@@ -110,12 +110,12 @@ const getUserRooms = async (req, res) => {
   try {
     const userId = req.user.id;
 
+    // Get all distinct roomIds where the user has participated
     const rooms = await Message.distinct('roomId', {
-      $or: [
-        { sender: userId },
-        // For user-to-user chats, roomId is typically sorted user IDs
-      ]
+      sender: userId
     });
+
+    console.log(`Found ${rooms.length} chat rooms for user ${userId}:`, rooms);
 
     res.json({
       success: true,
