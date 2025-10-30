@@ -1,7 +1,12 @@
 backend - https://devconnect-backend-erja.onrender.com/
 
 frontend - https://devconnect-frontend-tsk0.onrender.com/
+
  demo video 
+ https://github.com/user-attachments/assets/cee4a023-a08f-4db5-a17d-c114d5f61528
+
+ screenshots 
+ 
  
 
 # DevConnect - Developer Collaboration Platform
