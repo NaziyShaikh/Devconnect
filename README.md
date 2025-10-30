@@ -1,3 +1,9 @@
+backend - https://devconnect-backend-erja.onrender.com/
+
+frontend - https://devconnect-frontend-tsk0.onrender.com/
+ demo video 
+ 
+
 # DevConnect - Developer Collaboration Platform
 
 A full-stack MERN application for developers to connect, collaborate, and build amazing projects together.
