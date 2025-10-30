@@ -479,8 +479,9 @@ const UserProfile = () => {
           {/* Action Buttons - Only show for other users */}
           {!isOwnProfile && (
             <div className="mt-8 flex space-x-4">
-              <button
-                onClick={() => window.location.href = `/chat/${user._id}`}
+              <Link
+                to={`/chat/${user._id}`}
+                onClick={() => console.log('Starting chat with user:', user._id)}
                 className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl text-sm font-semibold hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center"
                 aria-label={`Chat with ${user.name}`}
                 title={`Chat with ${user.name}`}
@@ -489,7 +490,7 @@ const UserProfile = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
                 Start Chat
-              </button>
+              </Link>
             </div>
           )}
 
