@@ -6,7 +6,30 @@ frontend - https://devconnect-frontend-tsk0.onrender.com/
  https://github.com/user-attachments/assets/cee4a023-a08f-4db5-a17d-c114d5f61528
 
  screenshots 
- 
+HOME PAGE 
+<img width="1898" height="1092" alt="HOME PAGE OF PROJECT" src="https://github.com/user-attachments/assets/b7ba2685-defd-401b-9144-95aa41a6f2ea" />
+
+CHAT PAGE 
+<img width="1918" height="1092" alt="CHAT PAGE" src="https://github.com/user-attachments/assets/c8e3cc9e-1b47-44b3-a763-94eb0adc9752" />
+
+DASHBORD PAGE 
+<img width="1912" height="1097" alt="DASHBORD PAGE" src="https://github.com/user-attachments/assets/cf7a4f52-d620-4334-888f-64433f833877" />
+
+DEVELOPERS PAGE 
+<img width="1910" height="1088" alt="DEVELOPERS PAGE" src="https://github.com/user-attachments/assets/a3df5d43-5d00-470c-a917-2355ef43fce5" />
+
+NOTIFICATION PAGE 
+<img width="1026" height="620" alt="NOTIFICATION MENU" src="https://github.com/user-attachments/assets/3d6ade16-1c54-4446-8784-74a73ab0088c" />
+
+PROJECT PAGE 
+
+<img width="1915" height="1090" alt="PROJECT PAGE" src="https://github.com/user-attachments/assets/90cbd49a-228f-4c87-a690-0c71fb2674f4" />
+
+ADMIN DASHBORD
+ <img width="1911" height="1086" alt="ADMIN DASHBORD" src="https://github.com/user-attachments/assets/7e2214f2-2a71-4bd8-aa3e-33bec171f39c" />
+ PROFILE PAGE OF USER
+<img width="1915" height="1091" alt="PROFILE PAGE OF USER " src="https://github.com/user-attachments/assets/e7d11f1e-8f5f-44ea-acf3-e8e6e88229bf" />
+
  
 
 # DevConnect - Developer Collaboration Platform
