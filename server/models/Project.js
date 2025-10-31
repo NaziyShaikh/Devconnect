@@ -67,6 +67,11 @@ const projectSchema = new mongoose.Schema({
   isActive: {
     type: Boolean,
     default: true
+  },
+  slug: {
+    type: String,
+    unique: true,
+    sparse: true
   }
 }, {
   timestamps: true
