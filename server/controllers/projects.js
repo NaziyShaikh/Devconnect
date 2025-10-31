@@ -58,6 +58,12 @@ exports.getProject = async (req, res) => {
 exports.createProject = async (req, res) => {
   try {
     req.body.owner = req.user.id;
+
+    // Generate slug from title
+    if (req.body.title) {
+      req.body.slug = req.body.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    }
+
     const project = await Project.create(req.body);
 
     await project.populate('owner', 'name profile');
