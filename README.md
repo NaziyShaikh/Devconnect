@@ -1,6 +1,8 @@
-backend - https://devconnect-backend-erja.onrender.com/
+PROJECT BACKEND AND FRONTEND 
 
-frontend - https://devconnect-frontend-tsk0.onrender.com/
+ 1  backend - https://devconnect-backend-erja.onrender.com/
+
+ 2  frontend - https://devconnect-frontend-tsk0.onrender.com/
 
  demo video 
  https://github.com/user-attachments/assets/cee4a023-a08f-4db5-a17d-c114d5f61528
